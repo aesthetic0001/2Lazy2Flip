@@ -1,5 +1,5 @@
 {
   "threadsToUse": 6,
-  "discordWebhookToken": "token",
-  "discordWebhookID": "webhookID"
+  "discordWebhookToken": "",
+  "discordWebhookID": ""
 }
