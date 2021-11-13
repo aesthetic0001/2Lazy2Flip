@@ -65,7 +65,7 @@ async function getLBINs() {
 
 async function getMoulberry() {
     console.log("GETTING AVGS")
-    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/3day.json")
+    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/1day.json")
     const avgData = moulberryAvgs.data
     for (const item of Object.keys(avgData)) {
         itemDatas[item] = {}

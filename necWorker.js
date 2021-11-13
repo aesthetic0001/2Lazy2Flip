@@ -33,10 +33,13 @@ async function doTask() {
             if (!itemData) continue
             const lbin = itemData.lbin
             const sales = itemData.sales
-            // is the percentage difference in average cleanprice and current lbin greater than 45%?
-            const isMarketManipulated = (lbin - itemData.cleanPrice)/lbin > 0.45
+            // is the percentage difference in average cleanprice and current lbin greater than 50%?
+            const unstableOrMarketManipulated = (lbin - itemData.cleanPrice)/lbin > 0.5
 
-            if (item.sales === 0 || isMarketManipulated) {
+            if (item.sales === 0) {
+                continue
+            }
+            if (unstableOrMarketManipulated) {
                 continue
             }
 
