@@ -1,0 +1,8 @@
+{
+  "name": "notEnoughCoinsJS",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "prismarine-nbt": "^2.0.0"
+  }
+}
