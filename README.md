@@ -1,2 +1,2 @@
 # notEnoughCoinsJS
-heavily inspired by mindlesslydev's NotEnoughCoins mod
+heavily inspired by mindlesslydev's NotEnoughCoins[https://github.com/mindlesslydev/NotEnoughCoins] mod
