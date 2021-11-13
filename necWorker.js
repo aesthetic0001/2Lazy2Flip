@@ -2,7 +2,7 @@ const axios = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const nameFilter = ["STARRED", "SALMON", "PERFECT", "BEASTMASTER", "MASTER_SKULL", "BLAZE", "TITANIUM",
-    "SUPER_HEAVY", "WAND_OF", "FARM_ARMOR", "PURE_MITHRIL", "STEEL_CHESTPLATE", "MIDAS", "TRIBAL_SPEAR"]
+    "SUPER_HEAVY", "WAND_OF", "FARM_ARMOR", "PURE_MITHRIL", "STEEL_CHESTPLATE", "MIDAS", "TRIBAL_SPEAR", "POWER_SCROLL"]
 const otherFilter = ["TRAVEL_SCROLL", "COSMETIC", "DUNGEON_PASS", "ARROW_POISON", "PET_ITEM"]
 let minProfit = 100000
 let minPercentProfit = 0
@@ -37,6 +37,10 @@ async function doTask() {
             const unstableOrMarketManipulated = (lbin - itemData.cleanPrice)/lbin > 0.5
 
             if (item.sales === 0) {
+                continue
+            }
+            if (item.sales === undefined) {
+                item.sales = 0
                 continue
             }
             if (unstableOrMarketManipulated) {

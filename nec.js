@@ -46,7 +46,7 @@ async function initialize() {
                         console.log(result)
                         if (result[0]) {
                             result.forEach((flip) => {
-                                webhook.send(`Flip?\n${flip.itemID} going for ${currencyFormat.format(flip.currentPrice)} when LBIN is ${currencyFormat.format(flip.lbin)}\n\`Estimated profit: $${currencyFormat.format(flip.profit)}\`\n\`/viewauction ${flip.auctionID}\``, {
+                                webhook.send(`Flip?\n${flip.itemID} going for ${currencyFormat.format(flip.currentPrice)} when LBIN is ${currencyFormat.format(flip.lbin)}\n\`Estimated profit: ${currencyFormat.format(flip.profit)}\`\n\`/viewauction ${flip.auctionID}\``, {
                                     username: "Flips",
                                     avatarURL: "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554__340.jpg"
                                 });
