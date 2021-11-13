@@ -70,7 +70,7 @@ async function getMoulberry() {
     for (const item of Object.keys(avgData)) {
         itemDatas[item] = {}
         const itemInfo = avgData[item]
-        if (itemInfo.sales) {
+        if (itemInfo.sales !== undefined) {
             itemDatas[item].sales = itemInfo.sales
         } else {
             itemDatas[item].sales = 0
