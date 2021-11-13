@@ -19,7 +19,6 @@ function ProfitItem(ahID, profit, sales, percentProfit, auctioneer, itemID) {
 let profits = []
 
 async function doTask() {
-    // console.log("Working on " + workerData.pageToStartOn + " with " + workerData.pagesToProcess + " pages to process")
     for (let i = workerData.pageToStartOn; i < workerData.pagesToProcess + 1; i++) {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
         for (const auction of auctionPage.data.auctions) {
@@ -34,8 +33,10 @@ async function doTask() {
             if (!itemData) continue
             const lbin = itemData.lbin
             const sales = itemData.sales
+            // is the percentage difference in average cleanprice and current lbin greater than 45%?
+            const isMarketManipulated = (lbin - itemData.cleanPrice)/lbin > 0.45
 
-            if (item.sales === 0) {
+            if (item.sales === 0 || isMarketManipulated) {
                 continue
             }
 
