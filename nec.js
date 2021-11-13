@@ -1,8 +1,11 @@
 const axios = require("axios")
+const config = require("./config.json")
+const discord = require('discord.js')
+const webhook = new discord.WebhookClient(config.discordWebhookID, config.discordWebhookToken);
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
-let threadsToUse = 6
+let threadsToUse = config.threadsToUse
 let itemDatas = {}
 let lastUpdated = 0
 let receivedMsgs = 0
@@ -41,6 +44,14 @@ async function initialize() {
                     })
                     workers[j].once("message", result => {
                         console.log(result)
+                        if (result[0]) {
+                            result.forEach((flip) => {
+                                webhook.send(`Flip?\n${flip.itemID} going for $${flip.currentPrice} when LBIN is $${flip.lbin}\n\`Estimated profit: $${flip.profit}\`\n\`/viewauction ${flip.auctioneer}\``, {
+                                    username: "Flips",
+                                    avatarURL: "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554__340.jpg"
+                                });
+                            })
+                        }
                         receivedMsgs++
                         if (receivedMsgs === threadsToUse) {
                             receivedMsgs = 0
