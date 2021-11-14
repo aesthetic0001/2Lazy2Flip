@@ -45,6 +45,7 @@ async function doTask() {
 
             if (!config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales === 0 && ignoreNoSales) continue
 
+
             if (!config.nec.nameFilter.find((name) => itemID.includes(name))) {
                 if (lbin - auction.starting_bid > minProfit) {
                     if (startingBid >= 1000000) {
