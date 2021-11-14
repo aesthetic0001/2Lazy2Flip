@@ -43,7 +43,7 @@ async function doTask() {
                 continue
             }
 
-            if (!config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || item.sales === 0 && ignoreNoSales) continue
+            if (config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || item.sales === 0 && ignoreNoSales) continue
 
             if (!nameFilter.find((name) => itemID.includes(name))) {
                 if (lbin - auction.starting_bid > minProfit) {
