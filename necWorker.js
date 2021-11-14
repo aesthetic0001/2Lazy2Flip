@@ -9,19 +9,9 @@ const ignoreTalismans = true
 const ignoreNoSales = config.nec.ignoreIfNoSales
 const {Item} = require("./src/constructors/Item")
 
-function ProfitItem(ahID, profit, sales, percentProfit, auctioneer, itemID) {
-    this.auctionID = ahID
-    this.profit = profit
-    this.sales = sales
-    this.percentProfit = percentProfit
-    this.auctioneer = auctioneer
-    this.itemID = itemID
-}
-
-let profits = []
+let profits = ["prof"]
 
 async function doTask() {
-    console.log("Starting work on " + workerData.pageToStartOn)
     let ignoredCopy = workerData.ignored.slice()
     for (let i = workerData.pageToStartOn; i < workerData.pagesToProcess + 1; i++) {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
@@ -32,20 +22,32 @@ async function doTask() {
             const extraAtt = item["i"][0].tag.ExtraAttributes
             const itemID = extraAtt.id
             let startingBid = auction.starting_bid
-            let profitItem = new ProfitItem()
+            let profitItem = {
+                "profit": 0,
+                "percentProfit": 0
+            }
             const itemData = workerData.itemDatas[itemID]
             if (!itemData) continue
             const lbin = itemData.lbin
             const sales = itemData.sales
+            const prettyItem = new Item(item.i[0].tag.display.Name, uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
+                extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
+                    extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
+                extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
+                extraAtt.gems, itemID, auction.category, profitItem.profit, profitItem.percentProfit, lbin, sales)
             // is the percentage difference in average cleanprice and current lbin greater than X%?
-            const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec["maxAvg/LbinDiff"]
+            const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec.maxAvgLbinDiff
 
             if (ignoredCopy.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales === 0 && ignoreNoSales) continue
 
-
-            if (!config.nec.nameFilter.find((name) => itemID.includes(name))) {
+            if (config.nec.nameFilter.find((name) => itemID.includes(name)) === undefined) {
                 if (lbin - auction.starting_bid > minProfit) {
                     // TODO: Fix percent profit for craft cost (too lazy rn lmfao)
+                    if (config.nec.includeCraftCost) {
+                        const rawCraftAddition = getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas)
+                        profitItem.profit += rawCraftAddition
+                        console.log(rawCraftAddition)
+                    }
                     if (startingBid >= 1000000) {
                         profitItem.profit += (lbin - startingBid)
                             - (lbin * 0.02);
@@ -57,16 +59,8 @@ async function doTask() {
                         profitItem.percentProfit = (((lbin - startingBid)
                             - (lbin * 0.01)) / startingBid) * 100;
                     }
-                    const prettyItem = new Item(extraAtt.name, uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
-                        extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
-                            extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
-                        extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
-                        extraAtt.gems, itemID, auction.category, profitItem.profit, profitItem.percentProfit, lbin, sales)
-                    if (config.nec.includeCraftCost) {
-                        profitItem.profit += getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas)
-                    }
                     if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
-                        prettyItem.profit = profitItem.profit
+                        prettyItem.auctionData.profit = profitItem.profit
                         profits.push(prettyItem)
                         ignoredCopy.push(uuid)
                     }
@@ -74,7 +68,6 @@ async function doTask() {
             }
         }
     }
-    console.log("Done work on " + workerData.pageToStartOn)
     parentPort.postMessage(ignoredCopy)
     parentPort.postMessage(profits)
 }

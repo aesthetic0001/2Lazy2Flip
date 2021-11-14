@@ -3,7 +3,7 @@
     "threadsToUse/speed": 6,
     "minCoinProfit": 100000,
     "min%Profit": 0,
-    "maxAvg/LbinDiff": 0.5,
+    "maxAvgLbinDiff": 0.5,
     "nameFilter": [
       "SALMON",
       "PERFECT",
@@ -24,7 +24,8 @@
       "ZOMBIE",
       "CRYPT",
       "SOULSTEALER",
-      "GUN"
+      "GUN",
+      "SPIRIT_DECOY"
     ],
     "ignoreCategories": {
       "weapon": false,

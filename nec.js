@@ -5,8 +5,7 @@ const webhook = new discord.WebhookClient(config.webhook.discordWebhookID, confi
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
-const {Item} = require("./src/constructors/Item")
-let threadsToUse = config.threadsToUse
+let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
 let lastUpdated = 0
 let receivedMsgs = 0
@@ -24,7 +23,7 @@ async function initialize() {
     await getBzData()
     await getMoulberry()
     await getLBINs()
-    await webhook.send(`Hewwo. I am alive now!`, {
+    await webhook.send(`[NEC] Flipper On`, {
         username: config.webhook.webhookName,
         avatarURL: config.webhook.webhookPFP
     });
@@ -66,22 +65,22 @@ async function initialize() {
                     })
                     workers[j].on("message", result => {
                         if (result[0]) {
-                            if (typeof result[0] === "object") {
+                            result.splice(0, 1)
+                            if (result[0]) {
                                 result.forEach((flip) => {
                                     webhook.send(`${flip.itemData.name} going for ${currencyFormat.format(flip.auctionData.price)} when LBIN is ${currencyFormat.format(flip.auctionData.lbin)}\n\`${flip.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.auctionData.profit)}\`\n\`/viewauction ${flip.auctionData.auctionID}\``, {
                                         username: config.webhook.webhookName,
                                         avatarURL: config.webhook.webhookPFP
                                     });
                                 })
-                                receivedMsgs++
-                                if (receivedMsgs === threadsToUse) {
-                                    receivedMsgs = 0
-                                    resolve()
-                                }
-                            } else if (result[0]) {
-                                ignoredAuctionIDs.push(...result)
                             }
-
+                            receivedMsgs++
+                            if (receivedMsgs === threadsToUse) {
+                                receivedMsgs = 0
+                                resolve()
+                            }
+                        } else {
+                            ignoredAuctionIDs.push(...result)
                         }
                     });
                 }
@@ -103,7 +102,7 @@ async function getLBINs() {
 
 async function getMoulberry() {
     console.log("GETTING AVGS")
-    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/2day.json")
+    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/3day.json")
     const avgData = moulberryAvgs.data
     for (const item of Object.keys(avgData)) {
         itemDatas[item] = {}
