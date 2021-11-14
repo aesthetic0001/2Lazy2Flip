@@ -5,6 +5,7 @@ const webhook = new discord.WebhookClient(config.webhook.discordWebhookID, confi
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
+const {Item} = require("./src/constructors/Item")
 let threadsToUse = config.threadsToUse
 let itemDatas = {}
 let lastUpdated = 0
@@ -89,11 +90,12 @@ async function getLBINs() {
         if (!itemDatas[item]) itemDatas[item] = {}
         itemDatas[item].lbin = lbinData[item]
     }
+    console.log("Got LBINs")
 }
 
 async function getMoulberry() {
     console.log("GETTING AVGS")
-    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/3day.json")
+    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/2day.json")
     const avgData = moulberryAvgs.data
     for (const item of Object.keys(avgData)) {
         itemDatas[item] = {}
@@ -109,6 +111,7 @@ async function getMoulberry() {
             itemDatas[item].cleanPrice = itemInfo.price
         }
     }
+    console.log("Got avgs")
 }
 
 initialize()

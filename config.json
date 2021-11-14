@@ -29,7 +29,12 @@
       "blocks": false,
       "consumables": true
     },
-    "ignoreIfNoSales": true
+    "ignoreIfNoSales": true,
+    "includeCraftCost": true,
+    "rawCraftIgnores": {
+      "_WITHER_": ["GROWTH;6", "PROTECTION;6"],
+      "SHADOW_ASSASSIN": ["GROWTH;6", "PROTECTION;6"]
+    }
   },
   "webhook": {
     "discordWebhookToken": "",

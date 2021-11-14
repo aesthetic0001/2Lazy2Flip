@@ -6,6 +6,7 @@ let minProfit = config.nec.minCoinProfit
 let minPercentProfit = config.nec["min%Profit"]
 const ignoreTalismans = true
 const ignoreNoSales = config.nec.ignoreIfNoSales
+const {Item} = require("./src/constructors/Item")
 
 function ProfitItem(ahID, profit, sales, percentProfit, auctioneer, itemID) {
     this.auctionID = ahID
@@ -25,27 +26,26 @@ async function doTask() {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
         for (const auction of auctionPage.data.auctions) {
             if (!auction.bin) continue
-            const auctioneer = auction.auctioneer
             const uuid = auction.uuid
             const item = await getParsed(auction.item_bytes)
-            const itemID = item["i"][0].tag.ExtraAttributes.id
+            const extraAtt = item["i"][0].tag.ExtraAttributes
+            const itemID = extraAtt.id
             let startingBid = auction.starting_bid
             let profitItem = new ProfitItem()
             const itemData = workerData.itemDatas[itemID]
             if (!itemData) continue
             const lbin = itemData.lbin
             const sales = itemData.sales
-            // is the percentage difference in average cleanprice and current lbin greater than 50%?
+            // is the percentage difference in average cleanprice and current lbin greater than X%?
             const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec["maxAvg/LbinDiff"]
 
             if (ignoredCopy.includes(uuid)) {
-                console.log("In ignored list")
                 continue
             }
 
-            if (!config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || item.sales === 0 && ignoreNoSales) continue
+            if (!config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales === 0 && ignoreNoSales) continue
 
-            if (!nameFilter.find((name) => itemID.includes(name))) {
+            if (!config.nec.nameFilter.find((name) => itemID.includes(name))) {
                 if (lbin - auction.starting_bid > minProfit) {
                     if (startingBid >= 1000000) {
                         profitItem.profit = (lbin - startingBid)
@@ -59,12 +59,11 @@ async function doTask() {
                             - (lbin * 0.01)) / startingBid) * 100;
                     }
                     if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
-                        profitItem.auctioneer = auctioneer
-                        profitItem.currentPrice = auction.starting_bid
-                        profitItem.lbin = itemData.lbin
-                        profitItem.sales = sales
-                        profitItem.auctionID = uuid
-                        profitItem.itemID = itemID
+                        profits.push(new Item(extraAtt.name, uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
+                            extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
+                                extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
+                            extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
+                            extraAtt.gems, itemID, auction.category, profitItem.profit, profitItem.percentProfit, lbin, sales))
                         profits.push(profitItem)
                         ignoredCopy.push(uuid)
                     }
