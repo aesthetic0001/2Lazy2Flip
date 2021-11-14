@@ -12,6 +12,7 @@ const {Item} = require("./src/constructors/Item")
 let profits = ["prof"]
 
 async function doTask() {
+    console.log(workerData.pageToStartOn === 0 ? 0 : workerData.pageToStartOn + 1, workerData.pageToStartOn + workerData.pagesToProcess)
     let ignoredCopy = workerData.ignored.slice()
     for (let i = workerData.pageToStartOn; i < workerData.pagesToProcess + 1; i++) {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
@@ -43,6 +44,7 @@ async function doTask() {
             if (config.nec.nameFilter.find((name) => itemID.includes(name)) === undefined) {
                 if (lbin - auction.starting_bid > minProfit) {
                     // TODO: Fix percent profit for craft cost (too lazy rn lmfao)
+                    console.log(lbin, sales, itemID, prettyItem)
                     if (config.nec.includeCraftCost) {
                         const rawCraftAddition = getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas)
                         profitItem.profit += rawCraftAddition

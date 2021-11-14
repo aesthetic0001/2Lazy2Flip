@@ -5,6 +5,8 @@ const webhook = new discord.WebhookClient(config.webhook.discordWebhookID, confi
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
+const os = require("os")
+const totalThreads = os.cpus().length
 let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
 let lastUpdated = 0
@@ -20,6 +22,11 @@ const cachedBzData = {
 }
 
 async function initialize() {
+    if (threadsToUse > totalThreads) {
+        return console.log("[ERR] Too many threads specified! You don't have this many available!")
+    } else if (threadsToUse > Math.round(totalThreads / 2)) {
+        console.log("[WARN] You're allocating more than 1/2 of your threads to this process... This is not recommended.")
+    }
     await getBzData()
     await getMoulberry()
     await getLBINs()
@@ -64,22 +71,26 @@ async function initialize() {
                         }
                     })
                     workers[j].on("message", result => {
-                        if (result[0]) {
+                        if (result[0] === "prof") {
                             result.splice(0, 1)
                             if (result[0]) {
                                 result.forEach((flip) => {
-                                    webhook.send(`${flip.itemData.name} going for ${currencyFormat.format(flip.auctionData.price)} when LBIN is ${currencyFormat.format(flip.auctionData.lbin)}\n\`${flip.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.auctionData.profit)}\`\n\`/viewauction ${flip.auctionData.auctionID}\``, {
+                                    console.log(flip, "FLIP")
+                                    if (typeof flip === "string") return
+                                    webhook.send(`${flip.itemData.name ? flip.itemData.name : flip.itemData.id} going for ${currencyFormat.format(flip.auctionData.price)} when LBIN is ${currencyFormat.format(flip.auctionData.lbin)}\n\`${flip.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.auctionData.profit)}\`\n\`/viewauction ${flip.auctionData.auctionID}\``, {
                                         username: config.webhook.webhookName,
                                         avatarURL: config.webhook.webhookPFP
                                     });
                                 })
                             }
+                            console.log("No flips")
                             receivedMsgs++
                             if (receivedMsgs === threadsToUse) {
                                 receivedMsgs = 0
                                 resolve()
                             }
                         } else {
+                            console.log(ignoredAuctionIDs)
                             ignoredAuctionIDs.push(...result)
                         }
                     });
@@ -90,18 +101,15 @@ async function initialize() {
 }
 
 async function getLBINs() {
-    console.log("GETTING LBIN")
     const lbins = await axios.get("https://moulberry.codes/lowestbin.json")
     const lbinData = lbins.data
     for (const item of Object.keys(lbinData)) {
         if (!itemDatas[item]) itemDatas[item] = {}
         itemDatas[item].lbin = lbinData[item]
     }
-    console.log("Got LBINs")
 }
 
 async function getMoulberry() {
-    console.log("GETTING AVGS")
     const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/3day.json")
     const avgData = moulberryAvgs.data
     for (const item of Object.keys(avgData)) {
@@ -118,16 +126,13 @@ async function getMoulberry() {
             itemDatas[item].cleanPrice = itemInfo.price
         }
     }
-    console.log("Got avgs")
 }
 
 async function getBzData() {
-    console.log("Getting BZ data")
     const bzData = await axios.get("https://api.hypixel.net/skyblock/bazaar")
     cachedBzData["RECOMBOBULATOR_3000"] = bzData.data.products.RECOMBOBULATOR_3000.quick_status.buyPrice
     cachedBzData["HOT_POTATO_BOOK"] = bzData.data.products.HOT_POTATO_BOOK.quick_status.buyPrice
     cachedBzData["FUMING_POTATO_BOOK"] = bzData.data.products.FUMING_POTATO_BOOK.quick_status.buyPrice
-    console.log("Got BZ Data")
 }
 
 
