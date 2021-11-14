@@ -19,7 +19,12 @@
       "MIDAS",
       "TRIBAL_SPEAR",
       "POWER_SCROLL",
-      "_TRAVEL_SCROLL"
+      "_TRAVEL_SCROLL",
+      "ARTISINAL",
+      "ZOMBIE",
+      "CRYPT",
+      "SOULSTEALER",
+      "GUN"
     ],
     "ignoreCategories": {
       "weapon": false,

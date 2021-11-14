@@ -1,7 +1,6 @@
-const {getLBIN} = require("./getLBIN");
 const config = require("../../config.json ")
 
-function getRawCraft(item, cachedBzData, lbins, aowPrice) {
+function getRawCraft(item, cachedBzData, lbins) {
     let price = 0
     const ignoreMatch = Object.keys(config.nec.rawCraftIgnores).find((key) => {
         if (item.id.includes(key)) return true
@@ -20,12 +19,12 @@ function getRawCraft(item, cachedBzData, lbins, aowPrice) {
         }
     }
     if (item.aow) {
-        price += aowPrice * 0.7
+        price += lbins["THE_ART_OF_WAR"] * 0.7
     }
     if (item.recomb && (item.category === "weapon" || item.category === "armor" || item.category === "accessories")) {
         price += cachedBzData["RECOMBOBULATOR_3000"] * 0.7
     }
-    price += (item.hpbs ? item.hpbs : 0) * cachedBzData["HOT_POTATO_BOOK"]
+    price += (item.hpbs ? item.hpbs : 0) * cachedBzData["HOT_POTATO_BOOK"] * 0.7
     price += (item.fpbs ? item.fpbs : 0) * cachedBzData["FUMING_POTATO_BOOK"] * 0.7
 
     return price

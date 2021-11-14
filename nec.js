@@ -14,7 +14,14 @@ const workers = []
 const ignoredAuctionIDs = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
+const cachedBzData = {
+    "RECOMBOBULATOR_3000": 0,
+    "HOT_POTATO_BOOK": 0,
+    "FUMING_POTATO_BOOK": 0
+}
+
 async function initialize() {
+    await getBzData()
     await getMoulberry()
     await getLBINs()
     await webhook.send(`Hewwo. I am alive now!`, {
@@ -53,14 +60,15 @@ async function initialize() {
                             pagesToProcess: pagePerThread[j],
                             pageToStartOn: startingPage,
                             itemDatas: itemDatas,
-                            ignored: ignoredAuctionIDs
+                            ignored: ignoredAuctionIDs,
+                            bazaarData: cachedBzData
                         }
                     })
                     workers[j].on("message", result => {
                         if (result[0]) {
                             if (typeof result[0] === "object") {
                                 result.forEach((flip) => {
-                                    webhook.send(`${flip.itemID} going for ${currencyFormat.format(flip.currentPrice)} when LBIN is ${currencyFormat.format(flip.lbin)}\n\`${flip.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.profit)}\`\n\`/viewauction ${flip.auctionID}\``, {
+                                    webhook.send(`${flip.itemData.name} going for ${currencyFormat.format(flip.auctionData.price)} when LBIN is ${currencyFormat.format(flip.auctionData.lbin)}\n\`${flip.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.auctionData.profit)}\`\n\`/viewauction ${flip.auctionData.auctionID}\``, {
                                         username: config.webhook.webhookName,
                                         avatarURL: config.webhook.webhookPFP
                                     });
@@ -113,5 +121,15 @@ async function getMoulberry() {
     }
     console.log("Got avgs")
 }
+
+async function getBzData() {
+    console.log("Getting BZ data")
+    const bzData = await axios.get("https://api.hypixel.net/skyblock/bazaar")
+    cachedBzData["RECOMBOBULATOR_3000"] = bzData.data.products.RECOMBOBULATOR_3000.quick_status.buyPrice
+    cachedBzData["HOT_POTATO_BOOK"] = bzData.data.products.HOT_POTATO_BOOK.quick_status.buyPrice
+    cachedBzData["FUMING_POTATO_BOOK"] = bzData.data.products.FUMING_POTATO_BOOK.quick_status.buyPrice
+    console.log("Got BZ Data")
+}
+
 
 initialize()
