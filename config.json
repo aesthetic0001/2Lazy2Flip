@@ -1,5 +1,40 @@
 {
-  "threadsToUse": 6,
-  "discordWebhookToken": "",
-  "discordWebhookID": ""
+  "nec": {
+    "threadsToUse/speed": 6,
+    "minCoinProfit": 100000,
+    "min%Profit": 0,
+    "maxAvg/LbinDiff": 0.5,
+    "nameFilter": [
+      "SALMON",
+      "PERFECT",
+      "BEASTMASTER",
+      "MASTER_SKULL",
+      "BLAZE",
+      "TITANIUM",
+      "SUPER_HEAVY",
+      "WAND_OF",
+      "FARM_ARMOR",
+      "PURE_MITHRIL",
+      "STEEL_CHESTPLATE",
+      "MIDAS",
+      "TRIBAL_SPEAR",
+      "POWER_SCROLL",
+      "_TRAVEL_SCROLL"
+    ],
+    "ignoreCategories": {
+      "weapon": false,
+      "accessories": true,
+      "armor": false,
+      "misc": false,
+      "blocks": false,
+      "consumables": true
+    },
+    "ignoreIfNoSales": true
+  },
+  "webhook": {
+    "discordWebhookToken": "",
+    "discordWebhookID": "",
+    "webhookName": "NotEnoughCoins",
+    "webhookPFP": "https://repository-images.githubusercontent.com/427746896/c6d33e7c-4be2-4d21-8454-2a39c5dca4ab"
+  }
 }

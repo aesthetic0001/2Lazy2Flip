@@ -1,7 +1,7 @@
 const axios = require("axios")
 const config = require("./config.json")
 const discord = require('discord.js')
-const webhook = new discord.WebhookClient(config.discordWebhookID, config.discordWebhookToken);
+const webhook = new discord.WebhookClient(config.webhook.discordWebhookID, config.webhook.discordWebhookToken);
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
@@ -10,11 +10,23 @@ let itemDatas = {}
 let lastUpdated = 0
 let receivedMsgs = 0
 const workers = []
-const currencyFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+const ignoredAuctionIDs = []
+const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
+
 async function initialize() {
     await getMoulberry()
     await getLBINs()
-    await asyncInterval(async () => {
+    await webhook.send(`Hewwo. I am alive now!`, {
+        username: config.webhook.webhookName,
+        avatarURL: config.webhook.webhookPFP
+    });
+    // refresh LBINS and avgs every 1 mins
+    asyncInterval(async () => {
+        await getMoulberry()
+        await getLBINs()
+    }, "moulberry", 60000)
+
+    asyncInterval(async () => {
         return new Promise(async (resolve) => {
             const ahFirstPage = await axios.get("https://api.hypixel.net/skyblock/auctions?page=0")
             const totalPages = ahFirstPage.data.totalPages
@@ -39,23 +51,28 @@ async function initialize() {
                         workerData: {
                             pagesToProcess: pagePerThread[j],
                             pageToStartOn: startingPage,
-                            itemDatas: itemDatas
+                            itemDatas: itemDatas,
+                            ignored: ignoredAuctionIDs
                         }
                     })
-                    workers[j].once("message", result => {
-                        console.log(result)
+                    workers[j].on("message", result => {
                         if (result[0]) {
-                            result.forEach((flip) => {
-                                webhook.send(`Flip?\n${flip.itemID} going for ${currencyFormat.format(flip.currentPrice)} when LBIN is ${currencyFormat.format(flip.lbin)}\n\`Estimated profit: ${currencyFormat.format(flip.profit)}\`\n\`/viewauction ${flip.auctionID}\``, {
-                                    username: "Flips",
-                                    avatarURL: "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554__340.jpg"
-                                });
-                            })
-                        }
-                        receivedMsgs++
-                        if (receivedMsgs === threadsToUse) {
-                            receivedMsgs = 0
-                            resolve()
+                            if (typeof result[0] === "object") {
+                                result.forEach((flip) => {
+                                    webhook.send(`${flip.itemID} going for ${currencyFormat.format(flip.currentPrice)} when LBIN is ${currencyFormat.format(flip.lbin)}\n\`${flip.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.profit)}\`\n\`/viewauction ${flip.auctionID}\``, {
+                                        username: config.webhook.webhookName,
+                                        avatarURL: config.webhook.webhookPFP
+                                    });
+                                })
+                                receivedMsgs++
+                                if (receivedMsgs === threadsToUse) {
+                                    receivedMsgs = 0
+                                    resolve()
+                                }
+                            } else if (result[0]) {
+                                ignoredAuctionIDs.push(...result)
+                            }
+
                         }
                     });
                 }
@@ -76,7 +93,7 @@ async function getLBINs() {
 
 async function getMoulberry() {
     console.log("GETTING AVGS")
-    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/1day.json")
+    const moulberryAvgs = await axios.get("https://moulberry.codes/auction_averages/3day.json")
     const avgData = moulberryAvgs.data
     for (const item of Object.keys(avgData)) {
         itemDatas[item] = {}
