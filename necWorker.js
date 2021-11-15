@@ -41,20 +41,21 @@ async function doTask() {
             const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
 
             if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
-                if (lbin + rcCost - auction.starting_bid > minProfit) {
+                if ((lbin + rcCost) - auction.starting_bid > minProfit) {
+                    console.log(prettyItem)
                     if (config.nec.includeCraftCost) {
                         profitItem.profit += rcCost
                     }
                     if (startingBid >= 1000000) {
-                        profitItem.profit += (lbin + rcCost - startingBid)
-                            - (lbin + rcCost * 0.02);
+                        profitItem.profit += ((lbin + rcCost) - startingBid)
+                            - ((lbin + rcCost) * 0.02);
                         profitItem.percentProfit = (((lbin + rcCost - startingBid)
                             - (lbin + rcCost * 0.02)) / startingBid) * 100;
                     } else {
-                        profitItem.profit += (lbin + rcCost - startingBid)
-                            - (lbin + rcCost * 0.01);
-                        profitItem.percentProfit = (((lbin + rcCost - startingBid)
-                            - (lbin + rcCost * 0.01)) / startingBid) * 100;
+                        profitItem.profit += ((lbin + rcCost) - startingBid)
+                            - ((lbin + rcCost) * 0.01);
+                        profitItem.percentProfit = ((((lbin + rcCost) - startingBid)
+                            - ((lbin + rcCost) * 0.01)) / startingBid) * 100;
                     }
                     if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
                         prettyItem.auctionData.profit = profitItem.profit

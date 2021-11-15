@@ -1,6 +1,6 @@
 {
   "nec": {
-    "threadsToUse/speed": 10,
+    "threadsToUse/speed": 12,
     "minCoinProfit": 100000,
     "min%Profit": 0,
     "maxAvgLbinDiff": 0.5,
@@ -20,7 +20,7 @@
     "useWebhook": true,
     "discordWebhookToken": "",
     "discordWebhookID": "",
-    "webhookName": "2Lazy2Flip",
+    "webhookName": "NotEnoughCoins",
     "webhookPFP": "https://repository-images.githubusercontent.com/427746896/c6d33e7c-4be2-4d21-8454-2a39c5dca4ab"
   },
   "notifications": {
