@@ -14,7 +14,7 @@ let itemDatas = {}
 let lastUpdated = 0
 let doneWorkers = 0
 const workers = []
-const ignoredAuctionIDs = []
+let ignoredAuctionIDs = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
 const cachedBzData = {
@@ -116,7 +116,7 @@ async function initialize() {
                             }
                         } else {
                             doneWorkers++
-                            if (result[0]) ignoredAuctionIDs.push(...ignoredAuctionIDs, ...result)
+                            if (result[0]) ignoredAuctionIDs = [...ignoredAuctionIDs, ...result]
                             workers[j].removeAllListeners()
                         }
                         if (doneWorkers === threadsToUse) {
