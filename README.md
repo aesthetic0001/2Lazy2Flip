@@ -1,8 +1,6 @@
 # 2lazy2flip
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
-goog update tmr with lots of bug fixes and new features   
-
 features:
 - checks for market manipulation
 - category filters 
@@ -13,6 +11,8 @@ features:
 - webhook integration
 - crating value market value prediction 
 - nullify enchant values on select items
+- goog enchant filter
+- min lbin for rawCraft (to elimate stupid items like AOTD's with fumings getting on flips)
 
 Credits:
 - mindlesslydev for NotEnoughCoins
