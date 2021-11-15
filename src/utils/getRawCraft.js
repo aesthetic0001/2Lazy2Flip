@@ -2,7 +2,7 @@ const config = require("../../config.json")
 
 function getRawCraft(item, cachedBzData, lbins) {
     let price = 0
-    const ignoreMatch = Object.keys(config.nec.rawCraftIgnoreEnchants).find((key) => {
+    const ignoreMatch = Object.keys(config.filters.rawCraftIgnoreEnchants).find((key) => {
         if (item.itemData.id.includes(key)) return true
     })
     if (item.auctionData.lbin < config.nec.minPriceForRawcraft) return 0
@@ -10,9 +10,9 @@ function getRawCraft(item, cachedBzData, lbins) {
     if (item.itemData.enchants && !item.itemData.id.includes(";")) {
         for (const enchant of Object.keys(item.itemData.enchants)) {
             const degree = item.itemData.enchants[enchant]
-            const googEnchant = typeof config.nec.googEnchants[enchant] === "number" ? degree >= config.nec.googEnchants[enchant] : false
+            const googEnchant = typeof config.filters.googEnchants[enchant] === "number" ? degree >= config.filters.googEnchants[enchant] : false
             if (isInIgnore) {
-                const enchantMinValue = config.nec.rawCraftIgnoreEnchants[ignoreMatch][enchant]
+                const enchantMinValue = config.filters.rawCraftIgnoreEnchants[ignoreMatch][enchant]
                 if (enchantMinValue >= degree) continue
             }
             if (enchant.startsWith("ultimate") || googEnchant) {

@@ -40,7 +40,7 @@ async function doTask() {
 
             const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
 
-            if (config.nec.nameFilter.find((name) => itemID.includes(name)) === undefined) {
+            if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
                 if (lbin + rcCost - auction.starting_bid > minProfit) {
                     if (config.nec.includeCraftCost) {
                         profitItem.profit += rcCost

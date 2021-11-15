@@ -1,12 +1,14 @@
 const axios = require("axios")
 const config = require("./config.json")
 const discord = require('discord.js')
-const webhook = new discord.WebhookClient(config.webhook.discordWebhookID, config.webhook.discordWebhookToken);
 const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
 const os = require("os")
 const totalThreads = os.cpus().length
+const notifier = require("node-notifier")
+const clipboard = require('copy-paste');
+let webhook
 let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
 let lastUpdated = 0
@@ -22,6 +24,16 @@ const cachedBzData = {
 }
 
 async function initialize() {
+    if (config.webhook.useWebhook) {
+        webhook = new discord.WebhookClient(config.webhook.discordWebhookID, config.webhook.discordWebhookToken);
+    }
+    if (config.notifications.startAlert) {
+        notifier.notify({
+            title: '2Lazy2Flip',
+            message: "I'm alive!",
+            icon: './src/imgs/nec.jpeg'
+        })
+    }
     if (threadsToUse > totalThreads) {
         return console.log("[ERR] Too many threads specified! You don't have this many available!")
     } else if (threadsToUse > Math.round(totalThreads / 2)) {
@@ -30,10 +42,13 @@ async function initialize() {
     await getBzData()
     await getMoulberry()
     await getLBINs()
-    await webhook.send(`[NEC] Flipper On`, {
-        username: config.webhook.webhookName,
-        avatarURL: config.webhook.webhookPFP
-    });
+    if (config.webhook.useWebhook) {
+        await webhook.send(`[NEC] Flipper On`, {
+            username: config.webhook.webhookName,
+            avatarURL: config.webhook.webhookPFP
+        });
+    }
+
     // refresh LBINS and avgs every 1 mins
     asyncInterval(async () => {
         await getMoulberry()
@@ -73,17 +88,42 @@ async function initialize() {
                     workers[j].on("message", (result) => {
                         if (result.itemData !== undefined) {
                             console.log(result, "FLIP")
-                            webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
-                                username: config.webhook.webhookName,
-                                avatarURL: config.webhook.webhookPFP
-                            });
-                        } else if (result[0]) {
+                            if (config.webhook.useWebhook) {
+                                webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
+                                    username: config.webhook.webhookName,
+                                    avatarURL: config.webhook.webhookPFP
+                                });
+                            }
+                            if (config.notifications.alertFlips) {
+                                notifier.notify({
+                                    title: '2Lazy2Flip',
+                                    subtitle: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
+                                    message: "Would you like to copy the ah?",
+                                    icon: './src/imgs/nec.jpeg',
+                                    actions: ['Copy', 'Ignore']
+                                })
+                                notifier.once('timeout', () => {
+                                    notifier.removeAllListeners()
+                                });
+                                notifier.once('dismissed', () => {
+                                    notifier.removeAllListeners()
+                                });
+                                notifier.once('copy', () => {
+                                    notifier.removeAllListeners()
+                                    clipboard.copy(`/viewauction ${result.auctionData.auctionID}`);
+                                });
+                                notifier.once('ignore', () => {
+                                    notifier.removeAllListeners()
+                                });
+                            }
+                        } else if (!result[0]) {
                             doneWorkers++
                             workers[j].removeAllListeners()
                             ignoredAuctionIDs.push(...result)
                         }
                         if (doneWorkers === threadsToUse) {
                             doneWorkers = 0
+                            console.log("[Main thread]: All done")
                             resolve()
                         }
                     });
