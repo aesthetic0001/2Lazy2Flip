@@ -9,10 +9,7 @@ const ignoreTalismans = true
 const ignoreNoSales = config.nec.ignoreIfNoSales
 const {Item} = require("./src/constructors/Item")
 
-let profits = ["prof"]
-
 async function doTask() {
-    console.log(workerData.pageToStartOn === 0 ? 0 : workerData.pageToStartOn + 1, workerData.pageToStartOn + workerData.pagesToProcess)
     let ignoredCopy = workerData.ignored.slice()
     for (let i = workerData.pageToStartOn; i < workerData.pagesToProcess + 1; i++) {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
@@ -41,29 +38,27 @@ async function doTask() {
 
             if (ignoredCopy.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales === 0 && ignoreNoSales) continue
 
+            const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
+
             if (config.nec.nameFilter.find((name) => itemID.includes(name)) === undefined) {
-                if (lbin - auction.starting_bid > minProfit) {
-                    // TODO: Fix percent profit for craft cost (too lazy rn lmfao)
-                    console.log(lbin, sales, itemID, prettyItem)
+                if (lbin + rcCost - auction.starting_bid > minProfit) {
                     if (config.nec.includeCraftCost) {
-                        const rawCraftAddition = getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas)
-                        profitItem.profit += rawCraftAddition
-                        console.log(rawCraftAddition)
+                        profitItem.profit += rcCost
                     }
                     if (startingBid >= 1000000) {
-                        profitItem.profit += (lbin - startingBid)
-                            - (lbin * 0.02);
-                        profitItem.percentProfit = (((lbin - startingBid)
-                            - (lbin * 0.02)) / startingBid) * 100;
+                        profitItem.profit += (lbin + rcCost - startingBid)
+                            - (lbin + rcCost * 0.02);
+                        profitItem.percentProfit = (((lbin + rcCost - startingBid)
+                            - (lbin + rcCost * 0.02)) / startingBid) * 100;
                     } else {
-                        profitItem.profit += (lbin - startingBid)
-                            - (lbin * 0.01);
-                        profitItem.percentProfit = (((lbin - startingBid)
-                            - (lbin * 0.01)) / startingBid) * 100;
+                        profitItem.profit += (lbin + rcCost - startingBid)
+                            - (lbin + rcCost * 0.01);
+                        profitItem.percentProfit = (((lbin + rcCost - startingBid)
+                            - (lbin + rcCost * 0.01)) / startingBid) * 100;
                     }
                     if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
                         prettyItem.auctionData.profit = profitItem.profit
-                        profits.push(prettyItem)
+                        parentPort.postMessage(prettyItem)
                         ignoredCopy.push(uuid)
                     }
                 }
@@ -71,7 +66,8 @@ async function doTask() {
         }
     }
     parentPort.postMessage(ignoredCopy)
-    parentPort.postMessage(profits)
 }
 
-doTask()
+doTask().then(() => {
+    process.exit(0)
+})

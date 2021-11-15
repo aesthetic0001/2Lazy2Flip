@@ -10,7 +10,7 @@ const totalThreads = os.cpus().length
 let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
 let lastUpdated = 0
-let receivedMsgs = 0
+let doneWorkers = 0
 const workers = []
 const ignoredAuctionIDs = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
@@ -70,28 +70,21 @@ async function initialize() {
                             bazaarData: cachedBzData
                         }
                     })
-                    workers[j].on("message", result => {
-                        if (result[0] === "prof") {
-                            result.splice(0, 1)
-                            if (result[0]) {
-                                result.forEach((flip) => {
-                                    console.log(flip, "FLIP")
-                                    if (typeof flip === "string") return
-                                    webhook.send(`${flip.itemData.name ? flip.itemData.name : flip.itemData.id} going for ${currencyFormat.format(flip.auctionData.price)} when LBIN is ${currencyFormat.format(flip.auctionData.lbin)}\n\`${flip.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(flip.auctionData.profit)}\`\n\`/viewauction ${flip.auctionData.auctionID}\``, {
-                                        username: config.webhook.webhookName,
-                                        avatarURL: config.webhook.webhookPFP
-                                    });
-                                })
-                            }
-                            console.log("No flips")
-                            receivedMsgs++
-                            if (receivedMsgs === threadsToUse) {
-                                receivedMsgs = 0
-                                resolve()
-                            }
-                        } else {
-                            console.log(ignoredAuctionIDs)
+                    workers[j].on("message", (result) => {
+                        if (result.itemData !== undefined) {
+                            console.log(result, "FLIP")
+                            webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
+                                username: config.webhook.webhookName,
+                                avatarURL: config.webhook.webhookPFP
+                            });
+                        } else if (result[0]) {
+                            doneWorkers++
+                            workers[j].removeAllListeners()
                             ignoredAuctionIDs.push(...result)
+                        }
+                        if (doneWorkers === threadsToUse) {
+                            doneWorkers = 0
+                            resolve()
                         }
                     });
                 }

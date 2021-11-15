@@ -25,7 +25,9 @@
       "CRYPT",
       "SOULSTEALER",
       "GUN",
-      "SPIRIT_DECOY"
+      "SPIRIT_DECOY",
+      "EXP",
+      "PET_SKIN"
     ],
     "ignoreCategories": {
       "weapon": false,
@@ -37,10 +39,31 @@
     },
     "ignoreIfNoSales": true,
     "includeCraftCost": true,
-    "rawCraftIgnores": {
-      "_WITHER_": ["GROWTH;6", "PROTECTION;6"],
-      "SHADOW_ASSASSIN": ["GROWTH;6", "PROTECTION;6"]
-    }
+    "rawCraftIgnoreEnchants": {
+      "WITHER_": {
+        "growth": 6,
+        "protection": 6
+      },
+      "SHADOW_ASSASSIN": {
+        "growth": 6,
+        "protection": 6
+      }
+    },
+    "googEnchants": {
+      "giant_killer": 6,
+      "growth": 6,
+      "power": 6,
+      "protection": 6,
+      "sharpness": 6,
+      "enderslayer": 6,
+      "smite": 6,
+      "critical": 6,
+      "bane_of arthropods": 6,
+      "vampirism": 6,
+      "luck": 6,
+      "syphon": 4
+    },
+    "minPriceForRawcraft": 7000000
   },
   "webhook": {
     "discordWebhookToken": "",
