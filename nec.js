@@ -86,9 +86,7 @@ async function initialize() {
                         }
                     })
                     workers[j].on("message", (result) => {
-                        console.log(result, "MESSAGE")
                         if (result.itemData !== undefined) {
-                            console.log(result, "FLIP")
                             if (config.webhook.useWebhook) {
                                 webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
                                     username: config.webhook.webhookName,
@@ -116,10 +114,10 @@ async function initialize() {
                                     notifier.removeAllListeners()
                                 });
                             }
-                        } else if (!result[0]) {
+                        } else {
                             doneWorkers++
                             workers[j].removeAllListeners()
-                            ignoredAuctionIDs.push(...result)
+                            if (result[0]) ignoredAuctionIDs.push(...result)
                         }
                         if (doneWorkers === threadsToUse) {
                             doneWorkers = 0
