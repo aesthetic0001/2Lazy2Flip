@@ -116,8 +116,8 @@ async function initialize() {
                             }
                         } else {
                             doneWorkers++
+                            if (result[0]) ignoredAuctionIDs.push(...ignoredAuctionIDs, ...result)
                             workers[j].removeAllListeners()
-                            if (result[0]) ignoredAuctionIDs.push(...result)
                         }
                         if (doneWorkers === threadsToUse) {
                             doneWorkers = 0

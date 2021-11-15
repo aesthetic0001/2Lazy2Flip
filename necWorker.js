@@ -36,7 +36,7 @@ async function doTask() {
             // is the percentage difference in average cleanprice and current lbin greater than X%?
             const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec.maxAvgLbinDiff
 
-            if (ignoredCopy.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales === 0 && ignoreNoSales) continue
+            if (ignoredCopy.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales) continue
 
             const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
 
