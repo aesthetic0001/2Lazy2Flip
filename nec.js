@@ -86,6 +86,7 @@ async function initialize() {
                         }
                     })
                     workers[j].on("message", (result) => {
+                        console.log(result, "MESSAGE")
                         if (result.itemData !== undefined) {
                             console.log(result, "FLIP")
                             if (config.webhook.useWebhook) {
@@ -97,8 +98,7 @@ async function initialize() {
                             if (config.notifications.alertFlips) {
                                 notifier.notify({
                                     title: '2Lazy2Flip',
-                                    subtitle: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
-                                    message: "Would you like to copy the ah?",
+                                    message: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
                                     icon: './src/imgs/nec.jpeg',
                                     actions: ['Copy', 'Ignore']
                                 })

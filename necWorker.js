@@ -42,7 +42,6 @@ async function doTask() {
 
             if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
                 if ((lbin + rcCost) - auction.starting_bid > minProfit) {
-                    console.log(prettyItem)
                     if (config.nec.includeCraftCost) {
                         profitItem.profit += rcCost
                     }
@@ -50,7 +49,7 @@ async function doTask() {
                         profitItem.profit += ((lbin + rcCost) - startingBid)
                             - ((lbin + rcCost) * 0.02);
                         profitItem.percentProfit = (((lbin + rcCost - startingBid)
-                            - (lbin + rcCost * 0.02)) / startingBid) * 100;
+                            - ((lbin + rcCost) * 0.02)) / startingBid) * 100;
                     } else {
                         profitItem.profit += ((lbin + rcCost) - startingBid)
                             - ((lbin + rcCost) * 0.01);

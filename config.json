@@ -1,6 +1,6 @@
 {
   "nec": {
-    "threadsToUse/speed": 12,
+    "threadsToUse/speed": 6,
     "minCoinProfit": 100000,
     "min%Profit": 0,
     "maxAvgLbinDiff": 0.5,
@@ -44,13 +44,17 @@
       "power": 6,
       "protection": 6,
       "sharpness": 6,
-      "enderslayer": 6,
+      "ender_slayer": 6,
       "smite": 6,
       "critical": 6,
       "bane_of arthropods": 6,
       "vampirism": 6,
       "luck": 6,
-      "syphon": 4
+      "syphon": 4,
+      "ultimate_soul_eater": 3,
+      "ultimate_wise": 4,
+      "ultimate_wisdom": 4,
+      "ultimate_legion": 3
     },
     "nameFilter": [
       "SALMON",
@@ -75,7 +79,11 @@
       "GUN",
       "SPIRIT_DECOY",
       "EXP",
-      "PET_SKIN"
+      "PET_SKIN",
+      "SEEKER",
+      "MOSQUITO",
+      "NECROMANCER",
+      "REVELATION"
     ]
   }
 }
