@@ -1,6 +1,8 @@
 # 2lazy2flip
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
+goog update tmr with lots of bug fixes and new features   
+
 features:
 - checks for market manipulation
 - category filters 
