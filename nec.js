@@ -13,6 +13,7 @@ let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
 let lastUpdated = 0
 let doneWorkers = 0
+let startingTime
 const workers = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
@@ -92,7 +93,8 @@ async function initialize() {
                 doneWorkers++
                 if (doneWorkers === threadsToUse) {
                     doneWorkers = 0
-                    console.log("[Main thread]: All done")
+                    console.log(`[Main thread]: All done ${(Date.now() - startingTime)/1000} seconds`)
+                    startingTime = 0
                     workers[0].emit("done")
                 }
             }
@@ -113,6 +115,7 @@ async function initialize() {
                 resolve()
             } else {
                 lastUpdated = ahFirstPage.data.lastUpdated
+                startingTime = Date.now()
                 workers.forEach((worker) => {
                     worker.postMessage(totalPages)
                 })
