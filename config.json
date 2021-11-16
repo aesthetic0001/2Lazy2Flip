@@ -24,7 +24,7 @@
     "webhookPFP": "https://repository-images.githubusercontent.com/427746896/c6d33e7c-4be2-4d21-8454-2a39c5dca4ab"
   },
   "notifications": {
-    "alertFlips": true,
+    "alertFlips": false,
     "startAlert": true
   },
   "filters": {

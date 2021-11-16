@@ -14,7 +14,7 @@ let itemDatas = {}
 let lastUpdated = 0
 let doneWorkers = 0
 const workers = []
-let ignoredAuctionIDs = []
+let ignoredAuctionIDs = {}
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
 const cachedBzData = {
@@ -75,13 +75,14 @@ async function initialize() {
                             startingPage += pagePer
                         })
                     }
+                    ignoredAuctionIDs[j] = []
 
                     workers[j] = new Worker("./necWorker.js", {
                         workerData: {
                             pagesToProcess: pagePerThread[j],
                             pageToStartOn: startingPage,
                             itemDatas: itemDatas,
-                            ignored: ignoredAuctionIDs,
+                            ignored: ignoredAuctionIDs[j],
                             bazaarData: cachedBzData
                         }
                     })
@@ -116,7 +117,7 @@ async function initialize() {
                             }
                         } else {
                             doneWorkers++
-                            if (result[0]) ignoredAuctionIDs = [...ignoredAuctionIDs, ...result]
+                            if (result[0]) ignoredAuctionIDs[j] = result
                             workers[j].removeAllListeners()
                         }
                         if (doneWorkers === threadsToUse) {
