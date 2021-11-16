@@ -62,10 +62,15 @@ async function initialize() {
         workers[j].on("message", (result) => {
             if (result.itemData !== undefined) {
                 if (config.webhook.useWebhook) {
-                    webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
+                    // const urlFormattedLink = `https://fake-chat.matdoes.dev/render.png?m=custom&d=$&t=1`
+                    webhook.send(`https://fake-chat.matdoes.dev/render.png?t=1&m=custom&d=${encodeURIComponent(`${result.itemData.name} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n${result.auctionData.sales} sales per day\nEstimated profit: ${currencyFormat.format(result.auctionData.profit)}`)}`, {
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP
                     });
+                    webhook.send(`\`/viewauction ${result.auctionData.auctionID}\``, {
+                        username: config.webhook.webhookName,
+                        avatarURL: config.webhook.webhookPFP
+                    })
                 }
                 if (config.notifications.alertFlips) {
                     notifier.notify({
@@ -88,12 +93,11 @@ async function initialize() {
                         notifier.removeAllListeners()
                     });
                 }
-            }
-            else if (result === "finished") {
+            } else if (result === "finished") {
                 doneWorkers++
                 if (doneWorkers === threadsToUse) {
                     doneWorkers = 0
-                    console.log(`[Main thread]: All done ${(Date.now() - startingTime)/1000} seconds`)
+                    console.log(`[Main thread]: All done ${(Date.now() - startingTime) / 1000} seconds`)
                     startingTime = 0
                     workers[0].emit("done")
                 }
@@ -116,6 +120,7 @@ async function initialize() {
             } else {
                 lastUpdated = ahFirstPage.data.lastUpdated
                 startingTime = Date.now()
+                console.log("Requested for new flips...")
                 workers.forEach((worker) => {
                     worker.postMessage(totalPages)
                 })
