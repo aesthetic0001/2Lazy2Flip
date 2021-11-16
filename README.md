@@ -19,6 +19,8 @@ Credits:
 - discord.js for Webhooks
 - prismarine.js for nbt parsing
 - axios because I don't like node fetch
+- copy-paste for copy-paste
+- node-notifier for notifications
 
 don't turn this into some sort of macro istg
 
