@@ -2,16 +2,33 @@ const axios = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")
+const {splitNumber} = require("./src/utils/splitNumber");
 const {getRawCraft} = require("./src/utils/getRawCraft");
 let minProfit = config.nec.minCoinProfit
 let minPercentProfit = config.nec["min%Profit"]
 const ignoreTalismans = true
 const ignoreNoSales = config.nec.ignoreIfNoSales
+let ignoredAuctions = []
 const {Item} = require("./src/constructors/Item")
+const threadsToUse = require("./config.json").nec["threadsToUse/speed"]
 
-async function doTask() {
-    let ignoredCopy = workerData.ignored.slice()
-    for (let i = workerData.pageToStartOn; i < workerData.pagesToProcess + 1; i++) {
+parentPort.on("message", async (totalPages) => {
+    await doTask(totalPages)
+})
+
+async function doTask(totalPages) {
+    let startingPage = 0
+    const pagePerThread = splitNumber(totalPages, threadsToUse)
+
+    if (workerData.workerNumber !== 0 && startingPage === 0) {
+        const clonedStarting = pagePerThread.slice()
+        clonedStarting.splice(workerData.workerNumber, 9999);
+        clonedStarting.forEach((pagePer) => {
+            startingPage += pagePer
+        })
+    }
+
+    for (let i = startingPage; i < pagePerThread[workerData.workerNumber] + 1; i++) {
         const auctionPage = await axios.get(`https://api.hypixel.net/skyblock/auctions?page=${i}`)
         for (const auction of auctionPage.data.auctions) {
             if (!auction.bin) continue
@@ -36,7 +53,7 @@ async function doTask() {
             // is the percentage difference in average cleanprice and current lbin greater than X%?
             const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec.maxAvgLbinDiff
 
-            if (ignoredCopy.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales) continue
+            if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales) continue
 
             const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
 
@@ -59,15 +76,11 @@ async function doTask() {
                     if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
                         prettyItem.auctionData.profit = profitItem.profit
                         parentPort.postMessage(prettyItem)
-                        ignoredCopy.push(uuid)
+                        ignoredAuctions.push(uuid)
                     }
                 }
             }
         }
     }
-    parentPort.postMessage(ignoredCopy)
+    parentPort.postMessage("finished")
 }
-
-doTask().then(() => {
-    process.exit(0)
-})

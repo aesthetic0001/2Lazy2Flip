@@ -14,7 +14,6 @@ let itemDatas = {}
 let lastUpdated = 0
 let doneWorkers = 0
 const workers = []
-let ignoredAuctionIDs = {}
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
 const cachedBzData = {
@@ -49,6 +48,57 @@ async function initialize() {
         });
     }
 
+    // create the worker threads
+    for (let j = 0; j < threadsToUse; j++) {
+        workers[j] = new Worker("./necWorker.js", {
+            workerData: {
+                itemDatas: itemDatas,
+                bazaarData: cachedBzData,
+                workerNumber: j
+            }
+        })
+
+        workers[j].on("message", (result) => {
+            if (result.itemData !== undefined) {
+                if (config.webhook.useWebhook) {
+                    webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
+                        username: config.webhook.webhookName,
+                        avatarURL: config.webhook.webhookPFP
+                    });
+                }
+                if (config.notifications.alertFlips) {
+                    notifier.notify({
+                        title: '2Lazy2Flip',
+                        message: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
+                        icon: './src/imgs/nec.jpeg',
+                        actions: ['Copy', 'Ignore']
+                    })
+                    notifier.once('timeout', () => {
+                        notifier.removeAllListeners()
+                    });
+                    notifier.once('dismissed', () => {
+                        notifier.removeAllListeners()
+                    });
+                    notifier.once('copy', () => {
+                        notifier.removeAllListeners()
+                        clipboard.copy(`/viewauction ${result.auctionData.auctionID}`);
+                    });
+                    notifier.once('ignore', () => {
+                        notifier.removeAllListeners()
+                    });
+                }
+            }
+            else if (result === "finished") {
+                doneWorkers++
+                if (doneWorkers === threadsToUse) {
+                    doneWorkers = 0
+                    console.log("[Main thread]: All done")
+                    workers[0].emit("done")
+                }
+            }
+        });
+    }
+
     // refresh LBINS and avgs every 1 mins
     asyncInterval(async () => {
         await getMoulberry()
@@ -63,70 +113,12 @@ async function initialize() {
                 resolve()
             } else {
                 lastUpdated = ahFirstPage.data.lastUpdated
-                const pagePerThread = splitNumber(totalPages, threadsToUse)
-
-                for (let j = 0; j < threadsToUse; j++) {
-                    let startingPage = 0
-
-                    if (j !== 0 && startingPage === 0) {
-                        const clonedStarting = pagePerThread.slice()
-                        clonedStarting.splice(j, 9999);
-                        clonedStarting.forEach((pagePer) => {
-                            startingPage += pagePer
-                        })
-                    }
-                    ignoredAuctionIDs[j] = []
-
-                    workers[j] = new Worker("./necWorker.js", {
-                        workerData: {
-                            pagesToProcess: pagePerThread[j],
-                            pageToStartOn: startingPage,
-                            itemDatas: itemDatas,
-                            ignored: ignoredAuctionIDs[j],
-                            bazaarData: cachedBzData
-                        }
-                    })
-                    workers[j].on("message", (result) => {
-                        if (result.itemData !== undefined) {
-                            if (config.webhook.useWebhook) {
-                                webhook.send(`${result.itemData.name ? result.itemData.name : result.itemData.id} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n\`${result.auctionData.sales} sales per day\`\n\`Estimated profit: ${currencyFormat.format(result.auctionData.profit)}\`\n\`/viewauction ${result.auctionData.auctionID}\``, {
-                                    username: config.webhook.webhookName,
-                                    avatarURL: config.webhook.webhookPFP
-                                });
-                            }
-                            if (config.notifications.alertFlips) {
-                                notifier.notify({
-                                    title: '2Lazy2Flip',
-                                    message: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
-                                    icon: './src/imgs/nec.jpeg',
-                                    actions: ['Copy', 'Ignore']
-                                })
-                                notifier.once('timeout', () => {
-                                    notifier.removeAllListeners()
-                                });
-                                notifier.once('dismissed', () => {
-                                    notifier.removeAllListeners()
-                                });
-                                notifier.once('copy', () => {
-                                    notifier.removeAllListeners()
-                                    clipboard.copy(`/viewauction ${result.auctionData.auctionID}`);
-                                });
-                                notifier.once('ignore', () => {
-                                    notifier.removeAllListeners()
-                                });
-                            }
-                        } else {
-                            doneWorkers++
-                            if (result[0]) ignoredAuctionIDs[j] = result
-                            workers[j].removeAllListeners()
-                        }
-                        if (doneWorkers === threadsToUse) {
-                            doneWorkers = 0
-                            console.log("[Main thread]: All done")
-                            resolve()
-                        }
-                    });
-                }
+                workers.forEach((worker) => {
+                    worker.postMessage(totalPages)
+                })
+                workers[0].once("done", () => {
+                    resolve()
+                })
             }
         })
     }, "check", 0)
