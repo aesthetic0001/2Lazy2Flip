@@ -1,4 +1,4 @@
-# 2lazy2flip
+# 2Lazy2Flip
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
 features:
