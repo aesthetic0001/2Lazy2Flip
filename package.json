@@ -7,5 +7,22 @@
     "discord.js": "^12.5.3",
     "node-notifier": "^10.0.0",
     "prismarine-nbt": "^2.0.0"
-  }
+  },
+  "description": "Market and social credit manipulator",
+  "main": "nec.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aesthetic0001/2Lazy2Flip.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aesthetic0001/2Lazy2Flip/issues"
+  },
+  "homepage": "https://github.com/aesthetic0001/2Lazy2Flip#readme"
 }
