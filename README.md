@@ -1,4 +1,5 @@
-# 2Lazy2Flip
+# 2Lazy2Flip [![HitCount](http://hits.dwyl.com/aesthetic0001/2Lazy2Flip.svg)](http://hits.dwyl.com/aesthetic0001/2Lazy2Flip)
+
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
 features:
