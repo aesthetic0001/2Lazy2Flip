@@ -5,11 +5,11 @@ features:
 - checks for market manipulation
 - category filters 
 - name filters
-- no sales checks (still can't figure out why certain items aren't in 3day.json)
-- checks for updates 
+- smaller than 1 sales check
+- checks for ah updates 
 - min profit and min percent profit
-- webhook integration
-- crating value market value prediction 
+- discord webhook integration
+- crafting value market value prediction 
 - nullify enchant values on select items
 - goog enchant filter
 - min lbin for rawCraft (to elimate stupid items like AOTD's with fumings getting on flips)
