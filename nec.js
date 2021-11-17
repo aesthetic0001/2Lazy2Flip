@@ -11,8 +11,10 @@ let itemDatas = {}
 let lastUpdated = 0
 let doneWorkers = 0
 let startingTime
+let matches
 const workers = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
+const webhookRegex = /https:\/\/discord.com\/api\/webhooks\/(.+)\/(.+)/
 
 const cachedBzData = {
     "RECOMBOBULATOR_3000": 0,
@@ -22,7 +24,9 @@ const cachedBzData = {
 
 async function initialize() {
     if (config.webhook.useWebhook) {
-        webhook = new discord.WebhookClient(config.webhook.discordWebhookID, config.webhook.discordWebhookToken);
+        matches = config.webhook.discordWebhookUrl.match(webhookRegex)
+        if (!matches) return console.log(`[Main thread] Couldn't parse Webhook URL`)
+        webhook = new discord.WebhookClient(matches[1], matches[2]);
     }
     if (config.notifications.startAlert) {
         notifier.notify({
