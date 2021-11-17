@@ -64,7 +64,7 @@ async function initialize() {
                             .addField("Auction", `/viewauction ${result.auctionData.auctionID}`, true)
                             .addField("Item LBIN", `${currencyFormat.format(result.auctionData.lbin)}`, true)
                             .addField("Expected profit", `${currencyFormat.format(result.auctionData.profit)}`, true)
-                            .addField("Sales/Day", `${currencyFormat.format(result.auctionData.profit)}`, true)
+                            .addField("Sales/Day", `${result.auctionData.sales}`, true)
                             .setTimestamp()]
                     });
                 }
