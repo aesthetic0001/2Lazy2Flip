@@ -35,12 +35,6 @@ async function initialize() {
     await getBzData()
     await getMoulberry()
     await getLBINs()
-    if (config.webhook.useWebhook) {
-        await webhook.send(`[NEC] Flipper On`, {
-            username: config.webhook.webhookName,
-            avatarURL: config.webhook.webhookPFP
-        });
-    }
 
     // create the worker threads
     for (let j = 0; j < threadsToUse; j++) {
@@ -55,15 +49,19 @@ async function initialize() {
         workers[j].on("message", (result) => {
             if (result.itemData !== undefined) {
                 if (config.webhook.useWebhook) {
-                    // const urlFormattedLink = `https://fake-chat.matdoes.dev/render.png?m=custom&d=$&t=1`
-                    webhook.send(`https://fake-chat.matdoes.dev/render.png?t=1&m=custom&d=${encodeURIComponent(`${result.itemData.name} going for ${currencyFormat.format(result.auctionData.price)} when LBIN is ${currencyFormat.format(result.auctionData.lbin)}\n${result.auctionData.sales} sales per day\nEstimated profit: ${currencyFormat.format(result.auctionData.profit)}`)}`, {
+                    webhook.send(`/viewauction ${result.auctionData.auctionID}`, {
                         username: config.webhook.webhookName,
-                        avatarURL: config.webhook.webhookPFP
+                        avatarURL: config.webhook.webhookPFP,
+                        embeds: [new discord.MessageEmbed()
+                            .setTitle(`I found a flip!`)
+                            .setDescription(`${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.price)}`)
+                            .setColor("#f65575")
+                            .setThumbnail(`https://sky.shiiyu.moe/item/${result.itemData.id}`)
+                            .addField("Auction", `/viewauction ${result.auctionData.auctionID}`, true)
+                            .addField("Item LBIN", `${currencyFormat.format(result.auctionData.lbin)}`, true)
+                            .addField("Expected profit", `${currencyFormat.format(result.auctionData.profit)}`)
+                            .setTimestamp()]
                     });
-                    webhook.send(`\`/viewauction ${result.auctionData.auctionID}\``, {
-                        username: config.webhook.webhookName,
-                        avatarURL: config.webhook.webhookPFP
-                    })
                 }
                 if (config.notifications.alertFlips) {
                     notifier.notify({

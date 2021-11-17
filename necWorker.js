@@ -2,6 +2,7 @@ const axios = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")
+const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 const {splitNumber} = require("./src/utils/splitNumber");
 const {getRawCraft} = require("./src/utils/getRawCraft");
 let minProfit = config.nec.minCoinProfit
@@ -34,7 +35,7 @@ async function parsePage(i) {
         if (!itemData) continue
         const lbin = itemData.lbin
         const sales = itemData.sales
-        const prettyItem = new Item(item.i[0].tag.display.Name, uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
+        const prettyItem = new Item(strRemoveColorCodes(item.i[0].tag.display.Name), uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
             extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
                 extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
             extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
@@ -48,9 +49,6 @@ async function parsePage(i) {
 
         if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
             if ((lbin + rcCost) - auction.starting_bid > minProfit) {
-                if (config.nec.includeCraftCost) {
-                    profitItem.profit += rcCost
-                }
                 if (startingBid >= 1000000) {
                     profitItem.profit += ((lbin + rcCost) - startingBid)
                         - ((lbin + rcCost) * 0.02);

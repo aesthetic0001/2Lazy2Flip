@@ -24,9 +24,9 @@ function getRawCraft(item, cachedBzData, lbins) {
         price += lbins["THE_ART_OF_WAR"] * 0.3
     }
     if (item.itemData.recomb && (item.auctionData.category === "weapon" || item.auctionData.category === "armor" || item.auctionData.category === "accessories")) {
-        price += cachedBzData["RECOMBOBULATOR_3000"] * 0.2
+        price += cachedBzData["RECOMBOBULATOR_3000"] * 0.3
     }
-    price += (item.itemData.hpbs ? item.itemData.hpbs : 0) * cachedBzData["HOT_POTATO_BOOK"] * 0.3
+    price += (item.itemData.hpbs ? item.itemData.hpbs : 0) * cachedBzData["HOT_POTATO_BOOK"] * 0.05
     // NOBODY CARES ABOUT FUMINGS OML
     price += (item.itemData.fpbs ? item.itemData.fpbs : 0) * cachedBzData["FUMING_POTATO_BOOK"] * 0.05
 
