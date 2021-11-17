@@ -1,6 +1,6 @@
 {
   "nec": {
-    "threadsToUse/speed": 6,
+    "threadsToUse/speed": 12,
     "minCoinProfit": 100000,
     "min%Profit": 0,
     "maxAvgLbinDiff": 0.5,

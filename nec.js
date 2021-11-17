@@ -1,11 +1,8 @@
 const axios = require("axios")
 const config = require("./config.json")
 const discord = require('discord.js')
-const {splitNumber} = require("./src/utils/splitNumber")
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
-const os = require("os")
-const totalThreads = os.cpus().length
 const notifier = require("node-notifier")
 const clipboard = require('copy-paste');
 let webhook
@@ -34,11 +31,7 @@ async function initialize() {
             icon: './src/imgs/nec.jpeg'
         })
     }
-    if (threadsToUse > totalThreads) {
-        return console.log("[ERR] Too many threads specified! You don't have this many available!")
-    } else if (threadsToUse > Math.round(totalThreads / 2)) {
-        console.log("[WARN] You're allocating more than 1/2 of your threads to this process... This is not recommended.")
-    }
+
     await getBzData()
     await getMoulberry()
     await getLBINs()
