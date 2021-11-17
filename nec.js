@@ -59,7 +59,7 @@ async function initialize() {
                             .setThumbnail(`https://sky.shiiyu.moe/item/${result.itemData.id}`)
                             .addField("Auction", `/viewauction ${result.auctionData.auctionID}`, true)
                             .addField("Item LBIN", `${currencyFormat.format(result.auctionData.lbin)}`, true)
-                            .addField("Expected profit", `${currencyFormat.format(result.auctionData.profit)}`)
+                            .addField("Expected profit", `${currencyFormat.format(result.auctionData.profit)}`, true)
                             .setTimestamp()]
                     });
                 }
