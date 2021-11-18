@@ -15,6 +15,9 @@ features:
 - goog enchant filter
 - min lbin for rawCraft (to elimate stupid items like AOTD's with fumings getting on flips)
 
+showcase of webhook:
+![image](https://user-images.githubusercontent.com/15858616/142325158-2bfc3a64-8f87-4386-944d-1d5d3de78d00.png)
+
 Credits:
 - mindlesslydev for NotEnoughCoins
 - discord.js for Webhooks
