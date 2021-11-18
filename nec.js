@@ -62,10 +62,12 @@ async function initialize() {
                             .setDescription(`${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.price)}`)
                             .setColor("#f65575")
                             .setThumbnail(`https://sky.shiiyu.moe/item/${result.itemData.id}`)
-                            .addField("Auction", `/viewauction ${result.auctionData.auctionID}`, true)
-                            .addField("Item LBIN", `${currencyFormat.format(result.auctionData.lbin)}`, true)
-                            .addField("Expected profit", `${currencyFormat.format(result.auctionData.profit)}`, true)
-                            .addField("Sales/Day", `${result.auctionData.sales}`, true)
+                            .addFields([
+                              { name: "Auction", value: `/viewauction ${result.auctionData.auctionID}`, inline: true  },
+                              { name: "Item LBIN", value: `${currencyFormat.format(result.auctionData.lbin)}`, inline: true },
+                              { name: "Expected profit", value: `${currencyFormat.format(result.auctionData.profit)}`, inline: true },
+                              { name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true }
+                            ])
                             .setTimestamp()]
                     });
                 }
