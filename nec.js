@@ -50,10 +50,11 @@ async function initialize() {
             }
         })
 
-        workers[j].on("message", (result) => {
+        workers[j].on("message", async (result) => {
             if (result.itemData !== undefined) {
                 if (config.webhook.useWebhook) {
-                    webhook.send(`/viewauction ${result.auctionData.auctionID}`, {
+                    await webhook.send(`/viewauction ${result.auctionData.auctionID}`)
+                    await webhook.send(`^ here's the flip`, {
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP,
                         embeds: [new discord.MessageEmbed()
@@ -82,8 +83,8 @@ async function initialize() {
                         notifier.removeAllListeners()
                     });
                     notifier.once('copy', () => {
-                        notifier.removeAllListeners()
                         clipboard.copy(`/viewauction ${result.auctionData.auctionID}`);
+                        notifier.removeAllListeners()
                     });
                     notifier.once('ignore', () => {
                         notifier.removeAllListeners()
