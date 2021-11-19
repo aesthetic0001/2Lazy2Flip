@@ -1,10 +1,11 @@
-const axios = require("axios")
+const { default: axios } = require("axios")
 const config = require("./config.json")
 const discord = require('discord.js')
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
 const notifier = require("node-notifier")
 const clipboard = require('copy-paste');
+const { initServer, servUtils } = require('./src/server/server')
 let webhook
 let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
@@ -36,6 +37,7 @@ async function initialize() {
         })
     }
 
+    await initServer()
     await getBzData()
     await getMoulberry()
     await getLBINs()
@@ -52,9 +54,9 @@ async function initialize() {
 
         workers[j].on("message", async (result) => {
             if (result.itemData !== undefined) {
+                servUtils.newFlip(result)
                 if (config.webhook.useWebhook) {
-                    await webhook.send(`/viewauction ${result.auctionData.auctionID}`)
-                    await webhook.send(`^ here's the flip`, {
+                    await webhook.send({
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP,
                         embeds: [new discord.MessageEmbed()

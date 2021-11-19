@@ -14,17 +14,17 @@
     },
     "ignoreIfNoSales": true,
     "includeCraftCost": true,
-    "minPriceForRawcraft": 5000000
+    "minPriceForRawcraft": 10000000
   },
   "webhook": {
     "useWebhook": true,
-    "discordWebhookUrl": "",
+    "discordWebhookUrl": "https://discord.com/api/webhooks/910656217502851112/RzTtdOT3qkEjVSVy0YpjnRC0_4ljcxr5GbGZCtScXT2cRMJkHLUqpzyMgZApe44U_djt",
     "webhookName": "2Lazy2Flip",
     "webhookPFP": "https://repository-images.githubusercontent.com/427746896/c6d33e7c-4be2-4d21-8454-2a39c5dca4ab"
   },
   "notifications": {
     "alertFlips": false,
-    "startAlert": true
+    "startAlert": false
   },
   "filters": {
     "rawCraftIgnoreEnchants": {
