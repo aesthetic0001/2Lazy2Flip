@@ -1,4 +1,4 @@
-const axios = require("axios");
+const { default: axios } = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")

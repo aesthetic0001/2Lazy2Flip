@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2Lazy2Flip</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: monospace;
+    }
+
+    body {
+      background-color: black;
+    }
+
+    #list {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+    }
+
+    .flip {
+      float: left;
+      height: fit-content;
+      width: fit-content;
+      border: 2px solid white;
+      border-radius: 10px;
+      color: white;
+      margin: 1%;
+      padding: 1%;
+      animation: fade 500ms;
+      transition: all ease-in-out 200ms;
+    }
+
+    .flip:hover {
+      background-color: rgb(53, 0, 88);
+    }
+
+    .flip h2, .flip h1 {
+      padding: 1%;
+    }
+
+    .flip img {
+      float: right;
+    }
+
+    ::-webkit-scrollbar {
+      width: 15px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: black;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: white;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a0a0a0;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="list"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io()
+    const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
+    const list = document.getElementById('list')
+
+    socket.on('flip', (result) => {
+      localStorage.setItem(result.auctionData.auctionID, JSON.stringify(result))
+      appendFlip(result)
+    })
+
+    function appendFlip (result) {
+      const el = document.createElement('div')
+      el.className = 'flip'
+      el.innerHTML = `
+        <img src="https://sky.shiiyu.moe/item/${result.itemData.id}" alt="Error">
+        <h1><em>${result.itemData.name}</em></h1>
+        <h2>Price: ${currencyFormat.format(result.auctionData.price)}</h2>
+        <h2>LBIN: ${currencyFormat.format(result.auctionData.lbin)}</h2>
+        <h2>Expected profit: ${currencyFormat.format(result.auctionData.profit)}</h2>
+        <h2>Sales/Day: ${result.auctionData.sales}</h2>
+        <h2>Auction: /viewauction ${result.auctionData.auctionID}</h2>
+      `
+
+      list.appendChild(el)
+      window.scrollTo(0, 10000000)
+    }
+  </script>
+</body>
+</html>
