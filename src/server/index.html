@@ -40,7 +40,7 @@
       background-color: rgb(53, 0, 88);
     }
 
-    .flip h2 {
+    .flip h2, .flip h1 {
       padding: 1%;
     }
 
@@ -94,8 +94,7 @@
       el.className = 'flip'
       el.innerHTML = `
         <img src="https://sky.shiiyu.moe/item/${result.itemData.id}" alt="Error">
-        <h1>Flip</h1>
-        <h2>Name: ${result.itemData.name}</h2>
+        <h1><em>${result.itemData.name}</em></h1>
         <h2>Price: ${currencyFormat.format(result.auctionData.price)}</h2>
         <h2>LBIN: ${currencyFormat.format(result.auctionData.lbin)}</h2>
         <h2>Expected profit: ${currencyFormat.format(result.auctionData.profit)}</h2>
