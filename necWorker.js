@@ -2,11 +2,12 @@ const { default: axios } = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")
+const {getProfit} = require("./src/utils/getProfit");
 const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 const {splitNumber} = require("./src/utils/splitNumber");
 const {getRawCraft} = require("./src/utils/getRawCraft");
-let minProfit = config.nec.minCoinProfit
-let minPercentProfit = config.nec["min%Profit"]
+let minProfit = config.nec.minSnipeProfit
+let minPercentProfit = config.nec.minSnipePP
 const ignoreTalismans = true
 const ignoreNoSales = config.nec.ignoreIfNoSales
 let ignoredAuctions = []
@@ -27,42 +28,28 @@ async function parsePage(i) {
         const extraAtt = item["i"][0].tag.ExtraAttributes
         const itemID = extraAtt.id
         let startingBid = auction.starting_bid
-        let profitItem = {
-            "profit": 0,
-            "percentProfit": 0
-        }
         const itemData = workerData.itemDatas[itemID]
         if (!itemData) continue
         const lbin = itemData.lbin
         const sales = itemData.sales
-        const prettyItem = new Item(strRemoveColorCodes(item.i[0].tag.display.Name), uuid, auction.starting_bid, auction.tier, extraAtt.enchantments,
+        const prettyItem = new Item(strRemoveColorCodes(item.i[0].tag.display.Name), uuid, startingBid, auction.tier, extraAtt.enchantments,
             extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
                 extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
             extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
-            extraAtt.gems, itemID, auction.category, profitItem.profit, profitItem.percentProfit, lbin, sales)
+            extraAtt.gems, itemID, auction.category, 0, 0, lbin, sales)
         // is the percentage difference in average cleanprice and current lbin greater than X%?
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 
         if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales || !sales) continue
-
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
-        // TODO: make a percentage diff check to make sure that rawcraft isn't that big of a player in terms of price
+        const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
+        if (carriedByRC) continue
 
         if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
-            if ((lbin + rcCost) - auction.starting_bid > minProfit) {
-                if (startingBid >= 1000000) {
-                    profitItem.profit += ((lbin + rcCost) - startingBid)
-                        - ((lbin + rcCost) * 0.02);
-                    profitItem.percentProfit = (((lbin + rcCost - startingBid)
-                        - ((lbin + rcCost) * 0.02)) / startingBid) * 100;
-                } else {
-                    profitItem.profit += ((lbin + rcCost) - startingBid)
-                        - ((lbin + rcCost) * 0.01);
-                    profitItem.percentProfit = ((((lbin + rcCost) - startingBid)
-                        - ((lbin + rcCost) * 0.01)) / startingBid) * 100;
-                }
-                if (profitItem.profit > minProfit && profitItem.percentProfit > minPercentProfit) {
-                    prettyItem.auctionData.profit = profitItem.profit
+            if ((lbin + rcCost) - startingBid > minProfit) {
+                const profitData = getProfit(startingBid, rcCost, lbin)
+                if ((profitData.snipeProfit > minProfit && profitData.snipePP > minPercentProfit) || (profitData.RCProfit > config.nec.minCraftProfit && profitData.RCPP > config.nec.minCraftPP)) {
+                    prettyItem.auctionData.profit = profitData.RCProfit
                     parentPort.postMessage(prettyItem)
                     ignoredAuctions.push(uuid)
                 }
