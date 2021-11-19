@@ -55,6 +55,7 @@ async function initialize() {
         workers[j].on("message", async (result) => {
             if (result.itemData !== undefined) {
                 if (config.webhook.useWebhook) {
+                    servUtils.newFlip(result)
                     await webhook.send({
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP,
