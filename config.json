@@ -1,9 +1,12 @@
 {
   "nec": {
     "threadsToUse/speed": 12,
-    "minCoinProfit": 100000,
-    "min%Profit": 0,
+    "minSnipeProfit": 100000,
+    "minCraftProfit": 1000000,
+    "minSnipePP": 0,
+    "minCraftPP": 0,
     "maxAvgLbinDiff": 0.5,
+    "rawCraftMaxWeightPP": 0.3,
     "ignoreCategories": {
       "weapon": false,
       "accessories": true,
@@ -35,6 +38,13 @@
       "SHADOW_ASSASSIN": {
         "growth": 6,
         "protection": 6
+      },
+      "NECROMANCER": {
+        "growth": 6,
+        "protection": 6
+      },
+      "SHREDDED": {
+        "ultimate_soul_eater": 5
       }
     },
     "googEnchants": {
