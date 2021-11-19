@@ -6,17 +6,17 @@ const serv = new http.Server(app)
 const io = new socket.Server(serv)
 
 async function initServer () {
-	const port = 8080
-	app.use(express.json())
-	app.use(express.urlencoded({ extended: true }))
+		const port = 8080
+		app.use(express.json())
+		app.use(express.urlencoded({ extended: true }))
 	
-	app.get('/', (_, res) => {
-		res.sendFile('index.html', { root: __dirname })
-	})
+		app.get('/', (_, res) => {
+			res.sendFile('index.html', { root: __dirname })
+		})
 
-	serv.listen(port, () => {
-		console.log(`Webpage started on https://localhost:${port}`)
-	})
+		serv.listen(port, () => {
+			console.log(`Webpage started on https://localhost:${port}`)
+		})
 }
 
 const servUtils = {
