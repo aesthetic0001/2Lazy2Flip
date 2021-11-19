@@ -41,6 +41,7 @@ async function parsePage(i) {
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 
         if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales || !sales) continue
+        ignoredAuctions.push(uuid)
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
         const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
         if (carriedByRC) continue
@@ -51,7 +52,6 @@ async function parsePage(i) {
                 if ((profitData.snipeProfit > minProfit && profitData.snipePP > minPercentProfit) || (profitData.RCProfit > config.nec.minCraftProfit && profitData.RCPP > config.nec.minCraftPP)) {
                     prettyItem.auctionData.profit = profitData.RCProfit
                     parentPort.postMessage(prettyItem)
-                    ignoredAuctions.push(uuid)
                 }
             }
         }
