@@ -41,11 +41,12 @@ async function parsePage(i) {
             extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
             extraAtt.gems, itemID, auction.category, profitItem.profit, profitItem.percentProfit, lbin, sales)
         // is the percentage difference in average cleanprice and current lbin greater than X%?
-        const unstableOrMarketManipulated = (lbin - itemData.cleanPrice) / lbin > config.nec.maxAvgLbinDiff
+        const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 
         if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales || !sales) continue
 
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
+        // TODO: make a percentage diff check to make sure that rawcraft isn't that big of a player in terms of price
 
         if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
             if ((lbin + rcCost) - auction.starting_bid > minProfit) {
@@ -82,7 +83,13 @@ async function doTask(totalPages) {
         })
     }
 
-    for (let i = startingPage; i < pagePerThread[workerData.workerNumber] + 1; i++) {
+    let pageToStop = parseInt(startingPage) + parseInt(pagePerThread[workerData.workerNumber])
+
+    if (pageToStop !== totalPages) {
+        pageToStop -= 1
+    }
+
+    for (let i = startingPage; i < pageToStop; i++) {
         promises.push(parsePage(i))
     }
     await Promise.all(promises)

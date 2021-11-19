@@ -14,7 +14,7 @@
     },
     "ignoreIfNoSales": true,
     "includeCraftCost": true,
-    "minPriceForRawcraft": 5000000
+    "minPriceForRawcraft": 10000000
   },
   "webhook": {
     "useWebhook": true,

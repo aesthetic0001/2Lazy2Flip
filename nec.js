@@ -52,9 +52,9 @@ async function initialize() {
 
         workers[j].on("message", async (result) => {
             if (result.itemData !== undefined) {
+                console.log(result, "WORKER " + j)
                 if (config.webhook.useWebhook) {
-                    await webhook.send(`/viewauction ${result.auctionData.auctionID}`)
-                    await webhook.send(`^ here's the flip`, {
+                    await webhook.send({
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP,
                         embeds: [new discord.MessageEmbed()
