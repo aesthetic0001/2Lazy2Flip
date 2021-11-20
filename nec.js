@@ -6,6 +6,7 @@ const {asyncInterval} = require("./src/utils/asyncUtils")
 const notifier = require("node-notifier")
 const clipboard = require('copy-paste');
 const { initServer, servUtils } = require('./src/server/server')
+const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 let webhook
 let threadsToUse = config.nec["threadsToUse/speed"]
 let itemDatas = {}
@@ -54,14 +55,14 @@ async function initialize() {
 
         workers[j].on("message", async (result) => {
             if (result.itemData !== undefined) {
+                servUtils.newFlip(result)
                 if (config.webhook.useWebhook) {
-                    servUtils.newFlip(result)
                     await webhook.send({
                         username: config.webhook.webhookName,
                         avatarURL: config.webhook.webhookPFP,
                         embeds: [new discord.MessageEmbed()
                             .setTitle(`I found a flip!`)
-                            .setDescription(`${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.price)}`)
+                            .setDescription(`${strRemoveColorCodes(result.itemData.name)} was found for ${currencyFormat.format(result.auctionData.price)}`)
                             .setColor("#f65575")
                             .setThumbnail(`https://sky.shiiyu.moe/item/${result.itemData.id}`)
                             .addFields([

@@ -3,7 +3,6 @@ const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")
 const {getProfit} = require("./src/utils/getProfit");
-const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 const {splitNumber} = require("./src/utils/splitNumber");
 const {getRawCraft} = require("./src/utils/getRawCraft");
 let minProfit = config.nec.minSnipeProfit
@@ -32,7 +31,7 @@ async function parsePage(i) {
         if (!itemData) continue
         const lbin = itemData.lbin
         const sales = itemData.sales
-        const prettyItem = new Item(strRemoveColorCodes(item.i[0].tag.display.Name), uuid, startingBid, auction.tier, extraAtt.enchantments,
+        const prettyItem = new Item(item.i[0].tag.display.Name, uuid, startingBid, auction.tier, extraAtt.enchantments,
             extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
                 extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
             extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
