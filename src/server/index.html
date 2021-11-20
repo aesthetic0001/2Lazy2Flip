@@ -83,6 +83,7 @@
     const socket = io()
     const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
     const list = document.getElementById('list')
+    const regEx = /\/viewauction (.+)<\/h2>/
 
     socket.on('flip', (result) => {
       localStorage.setItem(result.auctionData.auctionID, JSON.stringify(result))
@@ -92,6 +93,7 @@
     function appendFlip (result) {
       const el = document.createElement('div')
       el.className = 'flip'
+      el.onclick = copyAuction
       el.innerHTML = `
         <img src="https://sky.shiiyu.moe/item/${result.itemData.id}" alt="Error">
         <h1><em>${result.itemData.name}</em></h1>
@@ -104,6 +106,20 @@
 
       list.appendChild(el)
       window.scrollTo(0, 10000000)
+    }
+
+    async function copyAuction (ev) {
+      let text = ''
+      if (ev.target.parentNode.id.includes('list')) {
+        text = ev.target.innerHTML
+      } else {
+        text = ev.target.parentNode.innerHTML
+      }
+
+      const match = text.match(regEx)
+      await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
+        .catch(err => console.log(err))
+      alert(`Copied to clipboard: /viewauction ${match[1]}`)
     }
   </script>
 </body>
