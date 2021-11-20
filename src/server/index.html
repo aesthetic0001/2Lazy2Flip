@@ -111,17 +111,21 @@
     }
 
     async function copyAuction (ev) {
-      let text = ''
-      if (ev.target.parentNode.id.includes('list')) {
-        text = ev.target.innerHTML
-      } else {
-        text = ev.target.parentNode.innerHTML
-      }
+      try {
+        window.focus()
+        let text = ''
+        if (ev.target.parentNode.id.includes('list')) {
+          text = ev.target.innerHTML
+        } else {
+          text = ev.target.parentNode.innerHTML
+        }
 
-      const match = text.match(regEx)
-      await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
-        .catch(err => console.log(err))
-      alert(`Copied to clipboard: /viewauction ${match[1]}`)
+        const match = text.match(regEx)
+        await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
+        alert(`Copied to clipboard: /viewauction ${match[1]}`)
+      } catch (e) {
+        console.log(e)
+      }
     }
   </script>
 </body>
