@@ -45,6 +45,14 @@
       },
       "SHREDDED": {
         "ultimate_soul_eater": 5
+      },
+      "GOLDEN" : {
+        "growth": 6,
+        "protection": 6
+      },
+      "DIAMOND": {
+        "growth": 6,
+        "protection": 6
       }
     },
     "googEnchants": {
