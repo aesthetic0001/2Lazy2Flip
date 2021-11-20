@@ -16,7 +16,11 @@ features:
 - min lbin for rawCraft (to elimate stupid items like AOTD's with fumings getting on flips)
 
 showcase of webhook:
-![image](https://user-images.githubusercontent.com/15858616/142325158-2bfc3a64-8f87-4386-944d-1d5d3de78d00.png)
+![image](https://user-images.githubusercontent.com/15858616/142711597-1968ef3f-cded-4b37-b2a3-0f4178ae37f6.png)
+
+showcase of webapp:
+
+![image](https://user-images.githubusercontent.com/15858616/142711612-2c877004-42d7-4506-a2bf-4aa409a6a3b0.png)
 
 Credits:
 - mindlesslydev for NotEnoughCoins
