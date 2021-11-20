@@ -89,7 +89,6 @@
     const regEx = /\/viewauction (.+)<\/h2>/
 
     socket.on('flip', (result) => {
-      localStorage.setItem(result.auctionData.auctionID, JSON.stringify(result))
       appendFlip(result)
     })
 
