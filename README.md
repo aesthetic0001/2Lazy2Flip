@@ -2,6 +2,10 @@
 
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
+# How to use:
+
+You can read how to use this program [here](https://github.com/aesthetic0001/2Lazy2Flip/blob/main/docs/howto.md)
+
 # Features:
 - checks for market manipulation
 - category filters 
