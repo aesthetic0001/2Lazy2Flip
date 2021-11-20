@@ -20,7 +20,7 @@ showcase of webhook:
 
 showcase of webapp:
 
-![image](https://user-images.githubusercontent.com/15858616/142711612-2c877004-42d7-4506-a2bf-4aa409a6a3b0.png)
+![image](https://user-images.githubusercontent.com/15858616/142711674-4d8cf5ad-50f8-4712-9eba-cc6fbe158930.png)
 
 Credits:
 - mindlesslydev for NotEnoughCoins
