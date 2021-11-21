@@ -20,7 +20,9 @@ async function initServer () {
 }
 
 const servUtils = {
-	newFlip: (result) => { io.emit('flip', result) }
+	newFlip: (result) => {
+    io.emit('flip', result)
+  }
 }
 
 module.exports = {
