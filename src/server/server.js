@@ -15,7 +15,7 @@ async function initServer () {
 		})
 
 		serv.listen(port, () => {
-			console.log(`Webpage started on localhost:${port}`)
+			console.log(`Webpage started on http://localhost:${port}/`)
 		})
 }
 
