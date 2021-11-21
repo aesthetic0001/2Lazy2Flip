@@ -163,7 +163,6 @@
 
             const match = text.match(regEx)
             await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
-            alert(`Copied to clipboard: /viewauction ${match[1]}`)
         } catch (e) {
             console.log(e)
         }

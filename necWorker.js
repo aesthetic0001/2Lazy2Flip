@@ -13,8 +13,12 @@ const {Item} = require("./src/constructors/Item")
 const threadsToUse = require("./config.json").nec["threadsToUse/speed"]
 const promises = []
 
-parentPort.on("message", async (totalPages) => {
-    await doTask(totalPages)
+parentPort.on("message", async (message) => {
+    if (message.type === "pageCount") {
+        await doTask(message.data)
+    } else if (message.type === "moulberry") {
+        workerData.itemData = message.data
+    }
 })
 
 async function parsePage(i) {

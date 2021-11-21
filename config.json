@@ -27,7 +27,7 @@
   },
   "notifications": {
     "alertFlips": false,
-    "startAlert": true
+    "startAlert": false
   },
   "filters": {
     "rawCraftIgnoreEnchants": {

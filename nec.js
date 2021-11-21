@@ -1,11 +1,11 @@
-const { default: axios } = require("axios")
+const {default: axios} = require("axios")
 const config = require("./config.json")
 const discord = require('discord.js')
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
 const notifier = require("node-notifier")
 const clipboard = require('copy-paste');
-const { initServer, servUtils } = require('./src/server/server')
+const {initServer, servUtils} = require('./src/server/server')
 const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 let webhook
 let threadsToUse = config.nec["threadsToUse/speed"]
@@ -66,10 +66,18 @@ async function initialize() {
                             .setColor("#f65575")
                             .setThumbnail(`https://sky.shiiyu.moe/item/${result.itemData.id}`)
                             .addFields([
-                              { name: "Auction", value: `/viewauction ${result.auctionData.auctionID}`, inline: true  },
-                              { name: "Item LBIN", value: `${currencyFormat.format(result.auctionData.lbin)}`, inline: true },
-                              { name: "Expected profit", value: `${currencyFormat.format(result.auctionData.profit)}`, inline: true },
-                              { name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true }
+                                {name: "Auction", value: `/viewauction ${result.auctionData.auctionID}`, inline: true},
+                                {
+                                    name: "Item LBIN",
+                                    value: `${currencyFormat.format(result.auctionData.lbin)}`,
+                                    inline: true
+                                },
+                                {
+                                    name: "Expected profit",
+                                    value: `${currencyFormat.format(result.auctionData.profit)}`,
+                                    inline: true
+                                },
+                                {name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true}
                             ])
                             .setTimestamp()]
                     });
@@ -111,6 +119,9 @@ async function initialize() {
     asyncInterval(async () => {
         await getMoulberry()
         await getLBINs()
+        workers.forEach((worker) => {
+            worker.postMessage({type: "moulberry", data: itemDatas})
+        })
     }, "moulberry", 60000)
 
     asyncInterval(async () => {
@@ -124,7 +135,7 @@ async function initialize() {
                 startingTime = Date.now()
                 console.log("Requested for new flips...")
                 workers.forEach((worker) => {
-                    worker.postMessage(totalPages)
+                    worker.postMessage({type: "pageCount", data: totalPages})
                 })
                 workers[0].once("done", () => {
                     resolve()
