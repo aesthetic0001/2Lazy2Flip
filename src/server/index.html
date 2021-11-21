@@ -1,102 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../imgs/nec.jpeg">
-  <title>2Lazy2Flip</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: monospace;
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../imgs/nec.jpeg">
+    <title>2Lazy2Flip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+        }
 
-    body {
-      background-color: black;
-    }
+        body {
+            background-color: black;
+        }
 
-    #list {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      width: 90%;
-    }
+        #list {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+        }
 
-    .flip {
-      float: left;
-      height: fit-content;
-      width: fit-content;
-      border: 2px solid white;
-      border-radius: 10px;
-      color: white;
-      margin: 1%;
-      padding: 1%;
-      animation: fade 500ms;
-      transition: all ease-in-out 200ms;
-    }
+        .flip {
+            float: left;
+            height: fit-content;
+            width: fit-content;
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            margin: 1%;
+            padding: 1%;
+            animation: fade 500ms;
+            transition: all ease-in-out 200ms;
+        }
 
-    .flip:hover {
-      cursor: pointer;
-      background-color: white;
-      color: black;
-    }
+        .flip:hover {
+            cursor: pointer;
+            background-color: white;
+            color: black;
+        }
 
-    .flip h2, .flip h1 {
-      padding: 1%;
-    }
+        .flip h2, .flip h1 {
+            padding: 1%;
+        }
 
-    .flip img {
-      float: right;
-    }
+        .flip img {
+            float: right;
+        }
 
-    ::-webkit-scrollbar {
-      width: 15px;
-    }
+        ::-webkit-scrollbar {
+            width: 15px;
+        }
 
-    ::-webkit-scrollbar-track {
-      background: black;
-      border-radius: 10px;
-    }
+        ::-webkit-scrollbar-track {
+            background: black;
+            border-radius: 10px;
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: white;
-      border-radius: 10px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background: white;
+            border-radius: 10px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a0a0a0;
-    }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
 
-    @keyframes fade {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+        .flip .tooltiptext {
+            visibility: hidden;
+            float: left;
+            height: fit-content;
+            width: fit-content;
+            border: 0.5px solid white;
+            border-radius: 1px;
+            color: white;
+            margin: 1%;
+            padding: 0.5%;
+            animation: fade 500ms;
+            transition: all ease-in-out 100ms;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .flip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="list"></div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
+<div id="list"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
     const socket = io()
     const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
     const list = document.getElementById('list')
     const regEx = /\/viewauction (.+)<\/h2>/
 
     socket.on('flip', (result) => {
-      appendFlip(result)
+        appendFlip(result)
     })
 
-    function appendFlip (result) {
-      const el = document.createElement('div')
-      el.className = 'flip'
-      el.onclick = copyAuction
-      el.innerHTML = `
+    function appendFlip(result) {
+        const el = document.createElement('div')
+        el.className = 'flip'
+        el.onclick = copyAuction
+        el.innerHTML = `
         <img src="https://sky.shiiyu.moe/item/${result.itemData.id}" alt="Error">
         <h1><em>${result.itemData.name}</em></h1>
         <h2>Price: ${currencyFormat.format(result.auctionData.price)}</h2>
@@ -104,29 +124,28 @@
         <h2>Expected profit: ${currencyFormat.format(result.auctionData.profit)}</h2>
         <h2>Sales/Day: ${result.auctionData.sales}</h2>
         <h2>Auction: /viewauction ${result.auctionData.auctionID}</h2>
-      `
-
-      list.appendChild(el)
-      window.scrollTo(0, 10000000)
+        <span class="tooltiptext">Copy /viewauction ${result.auctionData.auctionID}</span>
+`
+        list.appendChild(el)
+        window.scrollTo(0, 10000000)
     }
 
-    async function copyAuction (ev) {
-      try {
-        window.focus()
-        let text = ''
-        if (ev.target.parentNode.id.includes('list')) {
-          text = ev.target.innerHTML
-        } else {
-          text = ev.target.parentNode.innerHTML
+    async function copyAuction(ev) {
+        try {
+            window.focus()
+            let text = ''
+            if (ev.target.parentNode.id.includes('list')) {
+                text = ev.target.innerHTML
+            } else {
+                text = ev.target.parentNode.innerHTML
+            }
+
+            const match = text.match(regEx)
+            await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
+        } catch (e) {
+            console.log(e)
         }
-
-        const match = text.match(regEx)
-        await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
-        alert(`Copied to clipboard: /viewauction ${match[1]}`)
-      } catch (e) {
-        console.log(e)
-      }
     }
-  </script>
+</script>
 </body>
 </html>
