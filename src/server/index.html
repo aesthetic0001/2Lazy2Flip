@@ -1,138 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../imgs/nec.jpeg">
-  <title>2Lazy2Flip</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: monospace;
-      scroll-behavior: smooth;
-    }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../imgs/nec.jpeg">
+    <title>2Lazy2Flip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
+            scroll-behavior: smooth;
+        }
 
-    body {
-      background-color: black;
-    }
+        body {
+            background-color: black;
+        }
 
-    #list {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      width: 90%;
-    }
+        #list {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+        }
 
-    .flip {
-      float: left;
-      height: fit-content;
-      width: fit-content;
-      border: 2px solid white;
-      border-radius: 10px;
-      color: white;
-      margin: 1%;
-      padding: 1%;
-      animation: fade 500ms;
-      transition: all ease-in-out 200ms;
-    }
+        .flip {
+            float: left;
+            height: fit-content;
+            width: fit-content;
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            margin: 1%;
+            padding: 1%;
+            animation: fade 500ms;
+            transition: all ease-in-out 200ms;
+        }
 
-    .flip:hover {
-      cursor: pointer;
-      border: 2px solid black;
-    }
+        .flip:hover {
+            cursor: pointer;
+            border: 2px solid black;
+        }
 
-    .flip h2, .flip h1 {
-      padding: 1%;
-    }
+        .flip h2, .flip h1 {
+            padding: 1%;
+        }
 
-    .flip img {
-      display: block;
-      margin: auto;
-      margin-top: 10%;
-      margin-bottom: 10%;
-    }
+        .flip img {
+            display: block;
+            margin: auto;
+            margin-top: 10%;
+            margin-bottom: 10%;
+        }
 
-    .flip span {
-      font-size: larger;
-    }
+        .flip span {
+            font-size: larger;
+        }
 
-    .flip .title {
-      font-size: x-large;
-      font-style: italic;
-      padding: 5%;
-    }
+        .flip .title {
+            font-size: x-large;
+            font-style: italic;
+            padding: 5%;
+        }
 
-    .flip div {
-      padding: 10%;
-    }
+        .flip div {
+            padding: 10%;
+        }
 
-    .section {
-      border: 2px solid white;
-      border-radius: 10px;
-      padding: 5%;
-    }
+        .section {
+            border: 2px solid white;
+            border-radius: 10px;
+            padding: 5%;
+        }
 
-    ::-webkit-scrollbar {
-      width: 15px;
-    }
+        ::-webkit-scrollbar {
+            width: 15px;
+        }
 
-    ::-webkit-scrollbar-track {
-      background: black;
-      border-radius: 10px;
-    }
+        ::-webkit-scrollbar-track {
+            background: black;
+            border-radius: 10px;
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: white;
-      border-radius: 10px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background: white;
+            border-radius: 10px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a0a0a0;
-    }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
 
-    @keyframes fade {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+        @keyframes fade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="list"></div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
+<div id="list"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
     const socket = io()
     const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
     const list = document.getElementById('list')
     const regEx = /\/viewauction (.+)<\/span>/
 
     socket.on('flip', async (result) => {
-      await appendFlip(result)
+        await appendFlip(result)
     })
 
     function sleep () {
-      return new Promise(resolve => setTimeout(resolve, 100))
+        return new Promise(resolve => setTimeout(resolve, 100))
     }
 
     async function appendFlip (result) {
-      const el = document.createElement('div')
-      el.className = 'flip'
-      el.onclick = copyAuction
-      el.innerHTML = `
+        const el = document.createElement('div')
+        el.className = 'flip'
+        el.onclick = copyAuction
+        el.innerHTML = `
         <img src="https://sky.shiiyu.moe/item/${result.itemData.id}" alt="Error">
       `
 
-      const title = replaceColorCodes(result.itemData.name)
-      title.className = 'title'
-      el.append(title)
-      el.append(replaceColorCodes(result.itemData.lore))
+        const title = replaceColorCodes(result.itemData.name)
+        title.className = 'title'
+        el.append(title)
+        el.append(replaceColorCodes(result.itemData.lore))
 
-      el.innerHTML += `
+        el.innerHTML += `
         <div class="section">
           <span>Price: ${currencyFormat.format(result.auctionData.price)}</span>
           <br>
@@ -146,161 +146,161 @@
         </div>
       `
 
-      list.appendChild(el)
-      await sleep()
-      window.scrollTo(0, list.scrollHeight + 1000000)
+        list.appendChild(el)
+        await sleep()
+        window.scrollTo(0, list.scrollHeight + 1000000)
     }
 
     async function copyAuction (ev) {
-      try {
-        window.focus()
-        let text = ''
-        if (ev.target.parentNode.id.includes('list')) {
-          text = ev.target.innerHTML
-        } else {
-          text = ev.target.parentNode.innerHTML
-        }
+        try {
+            window.focus()
+            let text = ''
+            if (ev.target.parentNode.id.includes('list')) {
+                text = ev.target.innerHTML
+            } else {
+                text = ev.target.parentNode.innerHTML
+            }
 
-        const match = text.match(regEx)
-        await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
-        alert(`Copied to clipboard: /viewauction ${match[1]}`)
-      } catch (e) {
-        console.log(e)
-      }
+            const match = text.match(regEx)
+            await navigator.clipboard.writeText(`/viewauction ${match[1]}`)
+            alert(`Copied to clipboard: /viewauction ${match[1]}`)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     let obfuscators = []
     const styleMap = {
-      '§4': 'font-weight: normal; text-decoration: none; color: #be0000',
-      '§c': 'font-weight: normal; text-decoration: none; color: #fe3f3f',
-      '§6': 'font-weight: normal; text-decoration: none; color: #d9a334',
-      '§e': 'font-weight: normal; text-decoration: none; color: #fefe3f',
-      '§2': 'font-weight: normal; text-decoration: none; color: #00be00',
-      '§a': 'font-weight: normal; text-decoration: none; color: #3ffe3f',
-      '§b': 'font-weight: normal; text-decoration: none; color: #3ffefe',
-      '§3': 'font-weight: normal; text-decoration: none; color: #00bebe',
-      '§1': 'font-weight: normal; text-decoration: none; color: #0000be',
-      '§9': 'font-weight: normal; text-decoration: none; color: #3f3ffe',
-      '§d': 'font-weight: normal; text-decoration: none; color: #fe3ffe',
-      '§5': 'font-weight: normal; text-decoration: none; color: #be00be',
-      '§f': 'font-weight: normal; text-decoration: none; color: #ffffff',
-      '§7': 'font-weight: normal; text-decoration: none; color: #bebebe',
-      '§8': 'font-weight: normal; text-decoration: none; color: #3f3f3f',
-      '§0': 'font-weight: normal; text-decoration: none; color: #000000',
-      '§l': 'font-weight: bold',
-      '§n': 'text-decoration: underline; text-decoration-skip: spaces',
-      '§o': 'font-style: italic',
-      '§m': 'text-decoration: line-through; text-decoration-skip: spaces',
+        '§4': 'font-weight: normal; text-decoration: none; color: #be0000',
+        '§c': 'font-weight: normal; text-decoration: none; color: #fe3f3f',
+        '§6': 'font-weight: normal; text-decoration: none; color: #d9a334',
+        '§e': 'font-weight: normal; text-decoration: none; color: #fefe3f',
+        '§2': 'font-weight: normal; text-decoration: none; color: #00be00',
+        '§a': 'font-weight: normal; text-decoration: none; color: #3ffe3f',
+        '§b': 'font-weight: normal; text-decoration: none; color: #3ffefe',
+        '§3': 'font-weight: normal; text-decoration: none; color: #00bebe',
+        '§1': 'font-weight: normal; text-decoration: none; color: #0000be',
+        '§9': 'font-weight: normal; text-decoration: none; color: #3f3ffe',
+        '§d': 'font-weight: normal; text-decoration: none; color: #fe3ffe',
+        '§5': 'font-weight: normal; text-decoration: none; color: #be00be',
+        '§f': 'font-weight: normal; text-decoration: none; color: #ffffff',
+        '§7': 'font-weight: normal; text-decoration: none; color: #bebebe',
+        '§8': 'font-weight: normal; text-decoration: none; color: #3f3f3f',
+        '§0': 'font-weight: normal; text-decoration: none; color: #000000',
+        '§l': 'font-weight: bold',
+        '§n': 'text-decoration: underline; text-decoration-skip: spaces',
+        '§o': 'font-style: italic',
+        '§m': 'text-decoration: line-through; text-decoration-skip: spaces',
     }
 
     function obfuscate(string, elem) {
-      let magicSpan
-      let currNode
-      let len = elem.childNodes.length
-      if (string.indexOf('<br>') > -1) {
-        elem.innerHTML = string
-        for (let j = 0; j < len; j++) {
-          currNode = elem.childNodes[j]
-          if (currNode.nodeType === 3) {
-            magicSpan = document.createElement('span')
-            magicSpan.innerHTML = currNode.nodeValue
-            elem.replaceChild(magicSpan, currNode)
-            init(magicSpan)
-          }
+        let magicSpan
+        let currNode
+        let len = elem.childNodes.length
+        if (string.indexOf('<br>') > -1) {
+            elem.innerHTML = string
+            for (let j = 0; j < len; j++) {
+                currNode = elem.childNodes[j]
+                if (currNode.nodeType === 3) {
+                    magicSpan = document.createElement('span')
+                    magicSpan.innerHTML = currNode.nodeValue
+                    elem.replaceChild(magicSpan, currNode)
+                    init(magicSpan)
+                }
+            }
+        } else {
+            init(elem, string)
         }
-      } else {
-        init(elem, string)
-      }
 
-      function init(el, str) {
-        let i = 0
-        let obsStr = str ?? el.innerHTML
-        let len = obsStr.length
-        obfuscators.push(() => {
-          if (i >= len) i = 0
-          obsStr = replaceRand(obsStr, i)
-          el.innerHTML = obsStr
-          i++
-        })
-      }
+        function init(el, str) {
+            let i = 0
+            let obsStr = str ?? el.innerHTML
+            let len = obsStr.length
+            obfuscators.push(() => {
+                if (i >= len) i = 0
+                obsStr = replaceRand(obsStr, i)
+                el.innerHTML = obsStr
+                i++
+            })
+        }
 
-      function randNum (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min
-      }
+        function randNum (min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min
+        }
 
-      function replaceRand(string, i) {
-        let randChar = String.fromCharCode(randNum(64, 90))
-        return string.substr(0, i) + randChar + string.substr(i + 1, string.length)
-      }
+        function replaceRand(string, i) {
+            let randChar = String.fromCharCode(randNum(64, 90))
+            return string.substr(0, i) + randChar + string.substr(i + 1, string.length)
+        }
     }
 
     function applyCode(string, codes) {
-      let len = codes.length
-      let elem = document.createElement('span')
-      let obfuscated = false
-      for (let i = 0; i < len; i++) {
-        elem.style.cssText += styleMap[codes[i]] + ';'
-        if (codes[i] === '§k') {
-          obfuscate(string, elem)
-          obfuscated = true
+        let len = codes.length
+        let elem = document.createElement('span')
+        let obfuscated = false
+        for (let i = 0; i < len; i++) {
+            elem.style.cssText += styleMap[codes[i]] + ';'
+            if (codes[i] === '§k') {
+                obfuscate(string, elem)
+                obfuscated = true
+            }
         }
-      }
 
-      if (!obfuscated) elem.innerHTML = string
-      return elem
+        if (!obfuscated) elem.innerHTML = string
+        return elem
     }
 
     function parseStyle(string) {
-      let codes = string.match(/§.{1}/g) || []
-      let indexes = []
-      let apply = []
-      let tmpStr
-      let indexDelta
-      let noCode
-      let final = document.createElement('div')
-      let len = codes.length
-      string = string.replace(/\n|\\n/g, '<br>')
+        let codes = string.match(/§.{1}/g) || []
+        let indexes = []
+        let apply = []
+        let tmpStr
+        let indexDelta
+        let noCode
+        let final = document.createElement('div')
+        let len = codes.length
+        string = string.replace(/\n|\\n/g, '<br>')
 
-      for (let i = 0; i < len; i++) {
-        indexes.push(string.indexOf(codes[i]))
-        string = string.replace(codes[i], '\x00\x00')
-      }
-
-      if (indexes[0] !== 0) final.appendChild(applyCode(string.substring(0, indexes[0]), []))
-      for (let i = 0; i < len; i++) {
-        indexDelta = indexes[i + 1] - indexes[i]
-        if (indexDelta === 2) {
-          while (indexDelta === 2) {
-            apply.push(codes[i])
-            i++
-            indexDelta = indexes[i + 1] - indexes[i]
-          }
-
-          apply.push(codes[i])
-        } else {
-          apply.push(codes[i])
+        for (let i = 0; i < len; i++) {
+            indexes.push(string.indexOf(codes[i]))
+            string = string.replace(codes[i], '\x00\x00')
         }
 
-        if (apply.lastIndexOf('§r') > -1) apply = apply.slice(apply.lastIndexOf('§r') + 1)
-        tmpStr = string.substring(indexes[i], indexes[i + 1])
-        final.appendChild(applyCode(tmpStr, apply))
-      }
+        if (indexes[0] !== 0) final.appendChild(applyCode(string.substring(0, indexes[0]), []))
+        for (let i = 0; i < len; i++) {
+            indexDelta = indexes[i + 1] - indexes[i]
+            if (indexDelta === 2) {
+                while (indexDelta === 2) {
+                    apply.push(codes[i])
+                    i++
+                    indexDelta = indexes[i + 1] - indexes[i]
+                }
 
-      return final
+                apply.push(codes[i])
+            } else {
+                apply.push(codes[i])
+            }
+
+            if (apply.lastIndexOf('§r') > -1) apply = apply.slice(apply.lastIndexOf('§r') + 1)
+            tmpStr = string.substring(indexes[i], indexes[i + 1])
+            final.appendChild(applyCode(tmpStr, apply))
+        }
+
+        return final
     }
 
     function clearObfuscators() {
-      obfuscators = []
+        obfuscators = []
     }
 
     function replaceColorCodes (phrase) {
-      clearObfuscators()
-      return parseStyle(String(phrase))
+        clearObfuscators()
+        return parseStyle(String(phrase))
     }
 
     function strRemoveColorCodes (str) {
-      return str.replace(/§./g, '')
+        return str.replace(/§./g, '')
     }
-  </script>
+</script>
 </body>
 </html>

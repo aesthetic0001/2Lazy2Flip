@@ -8,7 +8,6 @@ const {getRawCraft} = require("./src/utils/getRawCraft");
 let minProfit = config.nec.minSnipeProfit
 let minPercentProfit = config.nec.minSnipePP
 const ignoreTalismans = true
-const ignoreNoSales = config.nec.ignoreIfNoSales
 let ignoredAuctions = []
 const {Item} = require("./src/constructors/Item")
 const threadsToUse = require("./config.json").nec["threadsToUse/speed"]
@@ -39,7 +38,7 @@ async function parsePage(i) {
         // is the percentage difference in average cleanprice and current lbin greater than X%?
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 
-        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && ignoreNoSales || !sales) continue
+        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= config.nec.minSales || !sales) continue
         ignoredAuctions.push(uuid)
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
         const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
