@@ -33,4 +33,4 @@ You can read how to use this program [here](https://github.com/aesthetic0001/2La
 Discord webhook:
 ![image](https://user-images.githubusercontent.com/15858616/142711597-1968ef3f-cded-4b37-b2a3-0f4178ae37f6.png)
 Webapp
-![image](https://user-images.githubusercontent.com/15858616/142711674-4d8cf5ad-50f8-4712-9eba-cc6fbe158930.png)
+![image](https://user-images.githubusercontent.com/15858616/142747304-98b80c0d-475a-404b-8171-dea3132b8c89.png)
