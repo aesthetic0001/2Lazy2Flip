@@ -15,7 +15,7 @@
       "blocks": false,
       "consumables": true
     },
-    "ignoreIfNoSales": true,
+    "minSales": 10,
     "includeCraftCost": true,
     "minPriceForRawcraft": 10000000
   },
