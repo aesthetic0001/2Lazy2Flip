@@ -35,7 +35,7 @@ async function parsePage(i) {
             extraAtt.hot_potato_count > 10 ? 10 : extraAtt.hot_potato_count, extraAtt.hot_potato_count > 10 ?
                 extraAtt.hot_potato_count - 10 : 0, extraAtt.rarity_upgrades === 1,
             extraAtt.art_of_war_count === 1, extraAtt.dungeon_item_level,
-            extraAtt.gems, itemID, auction.category, 0, 0, lbin, sales)
+            extraAtt.gems, itemID, auction.category, 0, 0, lbin, sales, auction.item_lore)
         // is the percentage difference in average cleanprice and current lbin greater than X%?
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 

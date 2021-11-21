@@ -26,7 +26,7 @@ If you don't want it to use Discord, then you have to disable it by setting to `
 
 <h2 align="center">4. Start the program</h2>
 
-Open the folder, and type `cmd` in the adress bar, this will open a terminal already in the folder.
+Open the folder, and type `cmd` in the address bar, this will open a terminal already in the folder.
 
 Now we have to install the dependencies, type `npm install` in the terminal. This should take a while, but it should install all dependencies.
 

@@ -1,4 +1,4 @@
-function Item(name, auctionID, price, rarity, enchants, hpbs, fpbs, recomb, artofwar, stars, gemstones, id, category, profit, percentProfit, lbin, sales) {
+function Item(name, auctionID, price, rarity, enchants, hpbs, fpbs, recomb, artofwar, stars, gemstones, id, category, profit, percentProfit, lbin, sales, lore) {
     this.itemData = {
         "name": name,
         "id": id,
@@ -9,7 +9,8 @@ function Item(name, auctionID, price, rarity, enchants, hpbs, fpbs, recomb, arto
         "hpbs": hpbs,
         "fpbs": fpbs,
         "gemstones": gemstones,
-        "aow": artofwar
+        "aow": artofwar,
+        "lore": lore
     }
     this.auctionData = {
         "auctionID": auctionID,
