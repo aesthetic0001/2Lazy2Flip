@@ -38,7 +38,7 @@ async function parsePage(i) {
         // is the percentage difference in average cleanprice and current lbin greater than X%?
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
 
-        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= 1 && config.nec.minSales || !sales) continue
+        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= config.nec.minSales || !sales) continue
         ignoredAuctions.push(uuid)
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
         const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
