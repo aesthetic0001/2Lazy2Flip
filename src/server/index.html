@@ -113,7 +113,18 @@
 
     socket.on('flip', async (result) => {
         await appendFlip(result)
+
+        if (document.hasFocus()) {
+            onFocus()
+        } else {
+            document.title = 'You have new flips!'
+        }
     })
+
+    window.onfocus = onFocus
+    function onFocus () {
+        document.title = '2Lazy2Flip'
+    }
 
     function sleep () {
         return new Promise(resolve => setTimeout(resolve, 100))

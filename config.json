@@ -1,4 +1,7 @@
 {
+  "page": {
+    "autoOpen": true
+  },
   "nec": {
     "threadsToUse/speed": 12,
     "minSnipeProfit": 100000,

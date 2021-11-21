@@ -1,6 +1,8 @@
 const express = require('express')
 const http = require('http')
 const socket = require('socket.io')
+const open = require('open')
+const config = require('../../config.json')
 const app = express()
 const serv = new http.Server(app)
 const io = new socket.Server(serv)
@@ -15,7 +17,8 @@ async function initServer () {
 		})
 
 		serv.listen(port, () => {
-			console.log(`Webpage started on localhost:${port}`)
+			console.log(`Webpage started on http://localhost:${port}/`)
+      if (config.page.autoOpen) open('http://localhost:8080/')
 		})
 }
 
