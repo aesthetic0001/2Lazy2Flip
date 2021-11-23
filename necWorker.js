@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const {default: axios} = require("axios");
 const {getParsed} = require("./src/utils/parseB64");
 const {parentPort, workerData} = require("worker_threads");
 const config = require("./config.json")
@@ -26,6 +26,7 @@ async function parsePage(i) {
     for (const auction of auctionPage.data.auctions) {
         if (!auction.bin) continue
         const uuid = auction.uuid
+        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category]) continue
         const item = await getParsed(auction.item_bytes)
         const extraAtt = item["i"][0].tag.ExtraAttributes
         const itemID = extraAtt.id
@@ -41,12 +42,11 @@ async function parsePage(i) {
             extraAtt.gems, itemID, auction.category, 0, 0, lbin, sales, auction.item_lore)
         // is the percentage difference in average cleanprice and current lbin greater than X%?
         const unstableOrMarketManipulated = Math.abs((lbin - itemData.cleanPrice) / lbin) > config.nec.maxAvgLbinDiff
-
-        if (ignoredAuctions.includes(uuid) || config.nec.ignoreCategories[auction.category] || unstableOrMarketManipulated || sales <= config.nec.minSales || !sales) continue
         ignoredAuctions.push(uuid)
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
         const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
-        if (carriedByRC) continue
+        
+        if (carriedByRC || unstableOrMarketManipulated || sales <= config.nec.minSales || !sales) continue
 
         if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
             if ((lbin + rcCost) - startingBid > minProfit) {
