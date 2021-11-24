@@ -6,8 +6,8 @@
     "threadsToUse/speed": 8,
     "minSnipeProfit": 100000,
     "minCraftProfit": 1000000,
-    "minSnipePP": 8,
-    "minCraftPP": 8,
+    "minSnipePP": 2,
+    "minCraftPP": 2,
     "maxAvgLbinDiff": 0.5,
     "rawCraftMaxWeightPP": 0.3,
     "ignoreCategories": {
