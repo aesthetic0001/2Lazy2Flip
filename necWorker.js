@@ -17,7 +17,7 @@ parentPort.on("message", async (message) => {
     if (message.type === "pageCount") {
         await doTask(message.data)
     } else if (message.type === "moulberry") {
-        workerData.itemData = message.data
+        workerData.itemDatas = message.data
     }
 })
 

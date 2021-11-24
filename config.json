@@ -3,7 +3,7 @@
     "autoOpen": true
   },
   "nec": {
-    "threadsToUse/speed": 12,
+    "threadsToUse/speed": 8,
     "minSnipeProfit": 100000,
     "minCraftProfit": 1000000,
     "minSnipePP": 0,
@@ -48,14 +48,6 @@
       },
       "SHREDDED": {
         "ultimate_soul_eater": 5
-      },
-      "GOLDEN" : {
-        "growth": 6,
-        "protection": 6
-      },
-      "DIAMOND": {
-        "growth": 6,
-        "protection": 6
       }
     },
     "googEnchants": {
@@ -102,7 +94,9 @@
       "PET_SKIN",
       "SEEKER",
       "MOSQUITO",
-      "REVELATION"
+      "REVELATION",
+      "FRAGMENT",
+      "RECALL"
     ]
   }
 }

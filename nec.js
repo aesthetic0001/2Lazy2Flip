@@ -115,14 +115,14 @@ async function initialize() {
         });
     }
 
-    // refresh LBINS and avgs every 1 mins
+    // refresh LBINS and avgs every 30s
     asyncInterval(async () => {
         await getMoulberry()
         await getLBINs()
         workers.forEach((worker) => {
             worker.postMessage({type: "moulberry", data: itemDatas})
         })
-    }, "moulberry", 60000)
+    }, "moulberry", 30000)
 
     asyncInterval(async () => {
         return new Promise(async (resolve) => {
