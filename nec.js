@@ -77,7 +77,8 @@ async function initialize() {
                                     value: `${currencyFormat.format(result.auctionData.profit)}`,
                                     inline: true
                                 },
-                                {name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true}
+                                {name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true},
+                                {name: "% Profit", value: `${result.auctionData.percentProfit}`, inline: true}
                             ])
                             .setTimestamp()]
                     });

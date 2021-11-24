@@ -53,6 +53,7 @@ async function parsePage(i) {
                 const profitData = getProfit(startingBid, rcCost, lbin)
                 if ((profitData.snipeProfit > minProfit && profitData.snipePP > minPercentProfit) || (profitData.RCProfit > config.nec.minCraftProfit && profitData.RCPP > config.nec.minCraftPP)) {
                     prettyItem.auctionData.profit = profitData.RCProfit
+                    prettyItem.auctionData.percentProfit = profitData.RCPP
                     parentPort.postMessage(prettyItem)
                 }
             }
