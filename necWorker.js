@@ -45,16 +45,37 @@ async function parsePage(i) {
         ignoredAuctions.push(uuid)
         const rcCost = config.nec.includeCraftCost ? getRawCraft(prettyItem, workerData.bazaarData, workerData.itemDatas) : 0
         const carriedByRC = rcCost >= config.nec.rawCraftMaxWeightPP * lbin
-        
+
         if (carriedByRC || unstableOrMarketManipulated || sales <= config.nec.minSales || !sales) continue
 
         if (config.filters.nameFilter.find((name) => itemID.includes(name)) === undefined) {
             if ((lbin + rcCost) - startingBid > minProfit) {
                 const profitData = getProfit(startingBid, rcCost, lbin)
-                if ((profitData.snipeProfit > minProfit && profitData.snipePP > minPercentProfit) || (profitData.RCProfit > config.nec.minCraftProfit && profitData.RCPP > config.nec.minCraftPP)) {
-                    prettyItem.auctionData.profit = profitData.RCProfit
-                    prettyItem.auctionData.percentProfit = profitData.RCPP
-                    parentPort.postMessage(prettyItem)
+                let auctionType = null
+
+                // not a snipe only a rc thing
+                if (rcCost > (lbin - startingBid) && profitData.snipeProfit < minProfit) {
+                    auctionType = "VALUE"
+                } else if (profitData.snipeProfit >= minProfit && rcCost < (lbin - startingBid)) {
+                    auctionType = "SNIPE"
+                } else if (profitData.snipeProfit >= minProfit && rcCost > 0) {
+                    auctionType = "BOTH"
+                }
+
+                prettyItem.auctionData.ahType = auctionType
+
+                if (auctionType === "VALUE" || auctionType === "BOTH") {
+                    if (profitData.RCProfit > config.nec.minCraftProfit && profitData.RCPP > config.nec.minCraftPP) {
+                        prettyItem.auctionData.profit = profitData.RCProfit
+                        prettyItem.auctionData.percentProfit = profitData.RCPP
+                        parentPort.postMessage(prettyItem)
+                    }
+                } else {
+                    if (profitData.snipeProfit > minProfit && profitData.snipePP > minPercentProfit) {
+                        prettyItem.auctionData.profit = profitData.snipeProfit
+                        prettyItem.auctionData.percentProfit = profitData.snipePP
+                        parentPort.postMessage(prettyItem)
+                    }
                 }
             }
         }

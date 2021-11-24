@@ -78,7 +78,8 @@ async function initialize() {
                                     inline: true
                                 },
                                 {name: "Sales/Day", value: `${result.auctionData.sales}`, inline: true},
-                                {name: "% Profit", value: `${result.auctionData.percentProfit}`, inline: true}
+                                {name: "% Profit", value: `${result.auctionData.percentProfit}`, inline: true},
+                                {name: "Type", value: `${result.auctionData.ahType}`, inline: true}
                             ])
                             .setTimestamp()]
                     });

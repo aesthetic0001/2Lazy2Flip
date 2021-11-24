@@ -3,17 +3,15 @@ function getProfit(price, rcCost, lbin) {
     if (price >= 1000000) {
         profitItem.RCProfit = ((lbin + rcCost) - price)
             - ((lbin + rcCost) * 0.02);
-        profitItem.RCPP = (((lbin + rcCost - price)
-            - ((lbin + rcCost) * 0.02)) / price) * 100;
+        profitItem.RCPP = (profitItem.RCProfit * 100) / lbin
         profitItem.snipeProfit = (lbin - price) - (lbin * 0.02)
-        profitItem.snipePP = (lbin - price) - ((lbin * 0.02) / price) * 100
+        profitItem.snipePP = (profitItem.snipeProfit * 100) / lbin
     } else {
         profitItem.RCProfit = ((lbin + rcCost) - price)
             - ((lbin + rcCost) * 0.01);
-        profitItem.RCPP = ((((lbin + rcCost) - price)
-            - ((lbin + rcCost) * 0.01)) / price) * 100;
+        profitItem.RCPP = (profitItem.RCProfit * 100) / lbin
         profitItem.snipeProfit = (lbin - price) - (lbin * 0.01)
-        profitItem.snipePP = (lbin - price) - ((lbin * 0.01) / price) * 100
+        profitItem.snipePP = (profitItem.snipeProfit * 100) / lbin
     }
 
     return profitItem
