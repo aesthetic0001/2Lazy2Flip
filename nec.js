@@ -3,8 +3,6 @@ const config = require("./config.json")
 const discord = require('discord.js')
 const {Worker} = require("worker_threads")
 const {asyncInterval} = require("./src/utils/asyncUtils")
-const notifier = require("node-notifier")
-const clipboard = require('copy-paste');
 const {initServer, servUtils} = require('./src/server/server')
 const {strRemoveColorCodes} = require("./src/utils/removeColorCodes");
 let webhook
@@ -14,6 +12,7 @@ let lastUpdated = 0
 let doneWorkers = 0
 let startingTime
 let matches
+let maxPrice = 0
 const workers = []
 const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 const webhookRegex = /https:\/\/discord.com\/api\/webhooks\/(.+)\/(.+)/
@@ -30,18 +29,12 @@ async function initialize() {
         if (!matches) return console.log(`[Main thread] Couldn't parse Webhook URL`)
         webhook = new discord.WebhookClient(matches[1], matches[2]);
     }
-    if (config.notifications.startAlert) {
-        notifier.notify({
-            title: '2Lazy2Flip',
-            message: "I'm alive!",
-            icon: './src/imgs/nec.jpeg'
-        })
-    }
 
     await initServer()
     await getBzData()
     await getMoulberry()
     await getLBINs()
+    await sync
 
     // create the worker threads
     for (let j = 0; j < threadsToUse; j++) {
@@ -49,7 +42,8 @@ async function initialize() {
             workerData: {
                 itemDatas: itemDatas,
                 bazaarData: cachedBzData,
-                workerNumber: j
+                workerNumber: j,
+                maxPrice: maxPrice
             }
         })
 
@@ -84,27 +78,6 @@ async function initialize() {
                             .setTimestamp()]
                     });
                 }
-                if (config.notifications.alertFlips) {
-                    notifier.notify({
-                        title: '2Lazy2Flip',
-                        message: `${result.itemData.name} was found for ${currencyFormat.format(result.auctionData.profit)} profit!`,
-                        icon: './src/imgs/nec.jpeg',
-                        actions: ['Copy', 'Ignore']
-                    })
-                    notifier.once('timeout', () => {
-                        notifier.removeAllListeners()
-                    });
-                    notifier.once('dismissed', () => {
-                        notifier.removeAllListeners()
-                    });
-                    notifier.once('copy', () => {
-                        clipboard.copy(`/viewauction ${result.auctionData.auctionID}`);
-                        notifier.removeAllListeners()
-                    });
-                    notifier.once('ignore', () => {
-                        notifier.removeAllListeners()
-                    });
-                }
             } else if (result === "finished") {
                 doneWorkers++
                 if (doneWorkers === threadsToUse) {
@@ -117,14 +90,21 @@ async function initialize() {
         });
     }
 
-    // refresh LBINS and avgs every 30s
+    // refresh LBINS every 60s
     asyncInterval(async () => {
-        await getMoulberry()
         await getLBINs()
         workers.forEach((worker) => {
             worker.postMessage({type: "moulberry", data: itemDatas})
         })
-    }, "moulberry", 30000)
+    }, "lbin", 60000)
+
+    // avgs every 10 mins
+    asyncInterval(async () => {
+        await getMoulberry()
+        workers.forEach((worker) => {
+            worker.postMessage({type: "moulberry", data: itemDatas})
+        })
+    }, "avg", 60e5)
 
     asyncInterval(async () => {
         return new Promise(async (resolve) => {

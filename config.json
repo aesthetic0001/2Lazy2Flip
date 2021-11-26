@@ -4,12 +4,13 @@
   },
   "nec": {
     "threadsToUse/speed": 8,
-    "minSnipeProfit": 100000,
+    "ign": false,
+    "minSnipeProfit": 300000,
     "minCraftProfit": 1000000,
-    "minSnipePP": 2,
-    "minCraftPP": 2,
-    "maxAvgLbinDiff": 0.5,
-    "rawCraftMaxWeightPP": 0.3,
+    "minSnipePP": 8,
+    "minCraftPP": 8,
+    "maxAvgLbinDiff": 0.35,
+    "rawCraftMaxWeightPP": 0.4,
     "ignoreCategories": {
       "weapon": false,
       "accessories": true,
@@ -18,19 +19,15 @@
       "blocks": false,
       "consumables": true
     },
-    "minSales": 10,
+    "minSales": 4,
     "includeCraftCost": true,
-    "minPriceForRawcraft": 10000000
+    "minPriceForRawcraft": 5000000
   },
   "webhook": {
     "useWebhook": false,
     "discordWebhookUrl": "",
     "webhookName": "2Lazy2Flip",
     "webhookPFP": "https://repository-images.githubusercontent.com/427746896/c6d33e7c-4be2-4d21-8454-2a39c5dca4ab"
-  },
-  "notifications": {
-    "alertFlips": false,
-    "startAlert": false
   },
   "filters": {
     "rawCraftIgnoreEnchants": {
@@ -48,6 +45,10 @@
       },
       "SHREDDED": {
         "ultimate_soul_eater": 5
+      },
+      "GOLD_": {
+        "growth": 6,
+        "protection": 6
       }
     },
     "googEnchants": {
@@ -97,7 +98,11 @@
       "REVELATION",
       "FRAGMENT",
       "RECALL",
-      "HEAT_CORE"
+      "HEAT_CORE",
+      "DIVER",
+      "SPONGE",
+      "CREEPER",
+      "CAKE_SOUL"
     ]
   }
 }
