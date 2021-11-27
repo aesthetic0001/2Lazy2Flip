@@ -217,12 +217,10 @@
             Toastify({
                 text: "Copied auction to clipboard",
                 duration: 3000,
-                gravity: "bottom", // `top` or `bottom`
-                position: 'center', // `left`, `center` or `right`
+                gravity: "top", // `top` or `bottom`
+                position: 'right', // `left`, `center` or `right`
                 backgroundColor: "linear-gradient(to right, orange, red)",
                 stopOnFocus: true, // Prevents dismissing of toast on hover
-                onClick: function () {
-                } // Callback after click
             }).showToast();
         }
         el.innerHTML = `
