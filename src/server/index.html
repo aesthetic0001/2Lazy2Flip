@@ -212,8 +212,8 @@
     async function appendFlip(result) {
         const el = document.createElement('div')
         el.className = 'flip'
-        el.onclick = () => {
-            copyAuction
+        el.onclick = (ev) => {
+            copyAuction(ev)
             Toastify({
                 text: "Copied auction to clipboard",
                 duration: 3000,
