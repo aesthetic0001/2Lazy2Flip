@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>The onclick Event</h1>
+
+<p>The onclick event is used to trigger a function when an element is clicked on.</p>
+
+<p>Click the button to trigger a function that will output "Hello World" in a p element with id="demo".</p>
+
+<button onclick="myFunction()">Click me</button>
+
+<p id="demo"></p>
+<style>
+    /* toastify */
+
+    .toastify {
+        padding: 12px 20px;
+        color: #fff;
+        display: inline-block;
+        box-shadow: 0 3px 6px -1px rgba(0, 0, 0, .12), 0 10px 36px -4px rgba(77, 96, 232, .3);
+        font-family: Tahoma;
+        background: -webkit-linear-gradient(315deg, #73a5ff, #5477f5);
+        background: linear-gradient(135deg, #73a5ff, #5477f5);
+        position: fixed;
+        opacity: 0;
+        transition: all .4s cubic-bezier(.215, .61, .355, 1);
+        border-radius: 2px;
+        cursor: pointer;
+        text-decoration: none;
+        max-width: calc(50% - 20px);
+        z-index: 2147483647
+    }
+
+    .toastify.on {
+        opacity: 1
+    }
+
+    .toast-close {
+        opacity: .4;
+        padding: 0 5px
+    }
+
+    .toastify-right {
+        right: 15px
+    }
+
+    .toastify-left {
+        left: 15px
+    }
+
+    .toastify-top {
+        top: -150px
+    }
+
+    .toastify-bottom {
+        bottom: -150px
+    }
+
+    .toastify-rounded {
+        border-radius: 25px
+    }
+
+    .toastify-avatar {
+        width: 1.5em;
+        height: 1.5em;
+        margin: -7px 5px;
+        border-radius: 2px
+    }
+
+    .toastify-center {
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        max-width: fit-content;
+        max-width: -moz-fit-content
+    }
+
+    @media only screen and (max-width: 360px) {
+        .toastify-left, .toastify-right {
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            max-width: fit-content
+        }
+    }
+
+    /* flipper */
+
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: Tahoma;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: black;
+    }
+
+    #list {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        width: 90%;
+    }
+
+    .flip {
+        float: left;
+        height: fit-content;
+        width: fit-content;
+        border: 2px solid white;
+        border-radius: 10px;
+        color: white;
+        margin: 1%;
+        padding: 1%;
+        /*animation: fade 500ms;*/
+        /*transition: all ease-in-out 200ms;*/
+    }
+
+    .flip:hover {
+        cursor: pointer;
+        border: 2px solid black;
+    }
+
+    .flip h2, .flip h1 {
+        padding: 1%;
+    }
+
+    .flip img {
+        display: block;
+        margin: auto;
+        margin-top: 10%;
+        margin-bottom: 10%;
+    }
+
+    .flip span {
+        font-size: larger;
+    }
+
+    .flip .title {
+        font-size: x-large;
+        font-style: italic;
+        padding: 5%;
+    }
+
+    .flip div {
+        padding: 10%;
+    }
+
+    .section {
+        border: 2px solid white;
+        border-radius: 10px;
+        padding: 5%;
+    }
+
+    ::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: black;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: white;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a0a0a0;
+    }
+
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+<script>
+    function myFunction() {
+        Toastify({
+            text: "Copied auction to clipboard",
+            duration: 3000,
+            gravity: "bottom", // `top` or `bottom`
+            position: 'center', // `left`, `center` or `right`
+            backgroundColor: "linear-gradient(to right, orange, red)",
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            onClick: function () {
+            } // Callback after click
+        }).showToast();
+    }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+</html>

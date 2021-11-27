@@ -2,3 +2,5 @@ node_modules
 regex.js
 .idea
 package-lock.json
+test.js
+test.html

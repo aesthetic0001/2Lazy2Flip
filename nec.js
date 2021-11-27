@@ -34,7 +34,6 @@ async function initialize() {
     await getBzData()
     await getMoulberry()
     await getLBINs()
-    await sync
 
     // create the worker threads
     for (let j = 0; j < threadsToUse; j++) {
@@ -105,6 +104,15 @@ async function initialize() {
             worker.postMessage({type: "moulberry", data: itemDatas})
         })
     }, "avg", 60e5)
+
+    // update purse bal every 3 mins cause skycrypt
+    // if (config.nec.ign) {
+    //     asyncInterval(async () => {
+    //         const request = axios.get(`https://sky.shiiyu.moe/api/v2/profile/${config.nec.ign}`)
+    //         const data = request.data
+    //
+    //     })
+    // }
 
     asyncInterval(async () => {
         return new Promise(async (resolve) => {
