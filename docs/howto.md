@@ -28,7 +28,7 @@ Here are some simple rules to follow when configuring the project:
 
 JSON looks something like "key": value
 
-When configuring the JSON file, do <b>NOT</b> change the key. <b>Only change the value<\b>
+When configuring the JSON file, do <b>NOT</b> change the key. <b>Only change the value</b>
 
 When changing a value, do not add or remove the quotation marks (""). If there is one, then write the value INSIDE the quotations.
 
