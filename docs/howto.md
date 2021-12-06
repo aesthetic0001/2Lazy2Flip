@@ -14,6 +14,8 @@ For more help on how to install NodeJS, click [me](https://www.pluralsight.com/g
 
 Head over to the [Releases tab](https://github.com/aesthetic0001/2Lazy2Flip/releases/latest) and download the <em>Source code</em> file from <em>Assets</em>.
 
+<img width="1517" alt="latestTab" src="https://user-images.githubusercontent.com/15858616/144899052-f4044eb2-f7cc-4c1b-9cc1-f11a4d367b24.png">
+
 Extract the downloaded <em>.zip</em> anywhere you like.
 
 <h2 align="center">3. Configure the project</h2>
