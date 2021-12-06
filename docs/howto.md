@@ -18,6 +18,8 @@ Head over to the [Releases tab](https://github.com/aesthetic0001/2Lazy2Flip/rele
 
 Extract the downloaded <em>.zip</em> anywhere you like.
 
+For more info on how to extract .zip files, click [me (Windows)](https://www.cedarville.edu/insights/computer-help/post/how-to-extract-files-from-a-zipped-compressed-folder) or [me(MacOS)](https://www.businessinsider.com/how-to-unzip-files-on-mac#:~:text=To%20unzip%20zipped%20files%20on,zipped%20folder%20on%20your%20desktop.)
+
 <h2 align="center">3. Configure the project</h2>
 
 Head into the extracted folder and open the `config.json` file, JSON stands for `JavaScript Object Notation` and the program will error out if it doesn't follow a set of rules. But you should be fine if you don't change it a lot.
