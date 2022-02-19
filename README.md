@@ -3,6 +3,8 @@
 
 heavily inspired by mindlesslydev's [NotEnoughCoins](https://github.com/mindlesslydev/NotEnoughCoins) mod  
 
+# no longer maintained!!!
+
 # How to use:
 
 You can read how to use this program [here](https://github.com/aesthetic0001/2Lazy2Flip/blob/main/docs/howto.md)
